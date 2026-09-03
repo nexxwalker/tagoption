@@ -92,7 +92,7 @@ function PriceChart({ ticks, mockTicks }) {
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke()
       const lx = toX(prices.length - 1), ly = toY(prices[prices.length - 1])
       ctx.beginPath(); ctx.arc(lx, ly, 3, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill()
-      ctx.fillStyle = '#3b7bff'
+      ctx.fillStyle = '#d99332'
       ctx.beginPath()
       if (ctx.roundRect) ctx.roundRect(lx + 3, ly - 10, 60, 20, 3)
       else ctx.rect(lx + 3, ly - 10, 60, 20)
@@ -113,7 +113,7 @@ function DigitCircle({ digit, pct, isActive, size = 46 }) {
   const cx = size / 2, cy = size / 2
   const circ = 2 * Math.PI * r
   const filled = (parseFloat(pct) / 100) * circ
-  const arcColor = digit === 5 ? '#ff4757' : (parseFloat(pct) > 11 ? '#00c97b' : '#3b7bff')
+  const arcColor = digit === 5 ? '#ff4757' : (parseFloat(pct) > 11 ? '#00c97b' : '#d99332')
   return (
     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:0, position:'relative', flexShrink:0 }}>
       <div style={{ position:'relative', width:size, height:size }}>
@@ -127,14 +127,14 @@ function DigitCircle({ digit, pct, isActive, size = 46 }) {
         <div style={{
           position:'absolute', inset:0, display:'flex', flexDirection:'column',
           alignItems:'center', justifyContent:'center', borderRadius:'50%',
-          background: isActive ? 'rgba(59,123,255,0.22)' : 'transparent'
+          background: isActive ? 'rgba(217,147,50,0.22)' : 'transparent'
         }}>
           <span style={{ fontSize:size*0.3, fontWeight:700, color:isActive?'#fff':'rgba(226,232,240,0.75)', lineHeight:1 }}>{digit}</span>
           <span style={{ fontSize:size*0.19, color:'rgba(136,146,164,0.9)', lineHeight:1.1 }}>{pct}%</span>
         </div>
       </div>
       {isActive && (
-        <div style={{ width:0, height:0, borderLeft:'4px solid transparent', borderRight:'4px solid transparent', borderTop:'5px solid #3b7bff', marginTop:2 }}/>
+        <div style={{ width:0, height:0, borderLeft:'4px solid transparent', borderRight:'4px solid transparent', borderTop:'5px solid #d99332', marginTop:2 }}/>
       )}
     </div>
   )
@@ -168,7 +168,7 @@ function MktDropdown({ markets, market, setMarket, setShowMarketDrop }) {
     <div style={{ position:'absolute', top:'calc(100% + 4px)', left:0, minWidth:220, background:'#141828', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, boxShadow:'0 8px 32px rgba(0,0,0,0.8)', zIndex:600, maxHeight:260, overflowY:'auto' }}>
       {markets.map(m => (
         <button key={m.sym} onClick={() => { setMarket(m); setShowMarketDrop(false) }}
-          style={{ width:'100%', padding:'9px 14px', border:'none', background:market.sym===m.sym?'rgba(59,123,255,0.15)':'transparent', color:market.sym===m.sym?'#3b7bff':'#e2e8f0', fontSize:12, textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.04)', display:'flex', alignItems:'center', gap:8 }}>
+          style={{ width:'100%', padding:'9px 14px', border:'none', background:market.sym===m.sym?'rgba(217,147,50,0.15)':'transparent', color:market.sym===m.sym?'#d99332':'#e2e8f0', fontSize:12, textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.04)', display:'flex', alignItems:'center', gap:8 }}>
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
           {m.label}
           {market.sym===m.sym&&<span style={{ marginLeft:'auto', width:5, height:5, borderRadius:'50%', background:'#00c97b', display:'inline-block'}}/>}
@@ -185,14 +185,14 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
       {/* TRADING MODE */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <span style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'#8892a4' }}>TRADING MODE</span>
-        <span style={{ fontSize:9, color:'#515c72' }}>Bot places trades</span>
+        <span style={{ fontSize:9, color:'#515c72' }}>Execution preferences</span>
       </div>
       {/* AUTO / MANUAL */}
       <div style={{ display:'flex', borderRadius:8, overflow:'hidden', border:'1px solid rgba(255,255,255,0.08)' }}>
         {['AUTO','MANUAL'].map(m => (
           <button key={m} onClick={() => setAutoMode(m==='AUTO')}
             style={{ flex:1, padding:'8px 0', border:'none', cursor:'pointer', fontSize:12, fontWeight:700,
-              background:autoMode===(m==='AUTO')?'#3b7bff':'#141828',
+              background:autoMode===(m==='AUTO')?'#d99332':'#141828',
               color:autoMode===(m==='AUTO')?'#fff':'#8892a4' }}>{m}</button>
         ))}
       </div>
@@ -201,9 +201,9 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
         {[['Even / Odd','even-odd'],['Match / Differ','match-differ'],['Over / Under','over-under']].map(([label,val]) => (
           <button key={val} onClick={() => setTradeType(val)}
             style={{ flex:1, padding:'7px 4px', border:'none', cursor:'pointer', fontSize:10, fontWeight:600,
-              background:tradeType===val?'rgba(59,123,255,0.18)':'#141828',
-              color:tradeType===val?'#3b7bff':'#8892a4',
-              borderBottom:tradeType===val?'2px solid #3b7bff':'2px solid transparent',
+              background:tradeType===val?'rgba(217,147,50,0.18)':'#141828',
+              color:tradeType===val?'#d99332':'#8892a4',
+              borderBottom:tradeType===val?'2px solid #d99332':'2px solid transparent',
               whiteSpace:'nowrap' }}>{label}</button>
         ))}
       </div>
@@ -212,7 +212,7 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
           <span style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'#8892a4' }}>STAKE AMOUNT</span>
           <div style={{ display:'flex', gap:3 }}>
-            <span style={{ fontSize:9, padding:'2px 8px', borderRadius:4, background:'#3b7bff', color:'#fff', fontWeight:700 }}>Stake</span>
+            <span style={{ fontSize:9, padding:'2px 8px', borderRadius:4, background:'#d99332', color:'#fff', fontWeight:700 }}>Stake</span>
             <span style={{ fontSize:9, padding:'2px 8px', borderRadius:4, color:'#8892a4', fontWeight:600 }}>Payout</span>
           </div>
         </div>
@@ -230,10 +230,10 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
           {[1,5,10,25,50,100].map(v => (
             <button key={v} onClick={() => setStake(v)}
               style={{ flex:1, padding:'5px 0', borderRadius:6,
-                border:`1px solid ${stake===v?'#3b7bff':'rgba(255,255,255,0.07)'}`,
+                border:`1px solid ${stake===v?'#d99332':'rgba(255,255,255,0.07)'}`,
                 cursor:'pointer',
-                background:stake===v?'rgba(59,123,255,0.2)':'#141828',
-                color:stake===v?'#3b7bff':'#8892a4', fontSize:10, fontWeight:600 }}>${v}</button>
+                background:stake===v?'rgba(217,147,50,0.2)':'#141828',
+                color:stake===v?'#d99332':'#8892a4', fontSize:10, fontWeight:600 }}>${v}</button>
           ))}
         </div>
       </div>
@@ -292,7 +292,7 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:5 }}>
           {[0,1,2,3,4,5,6,7,8,9].map(d => (
             <button key={d} onClick={() => placeTrade(`match-${d}`)}
-              style={{ padding:'8px 10px', borderRadius:8, border:'1px solid rgba(59,123,255,0.25)', background:'rgba(59,123,255,0.08)', color:'#3b7bff', fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', justifyContent:'space-between' }}>
+              style={{ padding:'8px 10px', borderRadius:8, border:'1px solid rgba(217,147,50,0.25)', background:'rgba(217,147,50,0.08)', color:'#d99332', fontSize:12, fontWeight:600, cursor:'pointer', display:'flex', justifyContent:'space-between' }}>
               <span>Match {d}</span><span style={{ fontSize:10, opacity:0.7 }}>${payout}</span>
             </button>
           ))}
@@ -311,7 +311,7 @@ function PositionsList({ openPos, closedPos, tab, setTab }) {
         {[['open',`Open (${openPos.length})`],['closed',`Closed (${closedPos.length})`],['txns','Transactions']].map(([key,label]) => (
           <button key={key} onClick={() => setTab(key)}
             style={{ flex:1, padding:'10px 0', border:'none', cursor:'pointer', background:'transparent', fontSize:11, fontWeight:600,
-              color:tab===key?'#3b7bff':'#8892a4', borderBottom:tab===key?'2px solid #3b7bff':'2px solid transparent' }}>{label}</button>
+              color:tab===key?'#d99332':'#8892a4', borderBottom:tab===key?'2px solid #d99332':'2px solid transparent' }}>{label}</button>
         ))}
       </div>
       <div style={{ flex:1, overflowY:'auto', padding:10 }} className="ns">
@@ -331,7 +331,7 @@ function PositionsList({ openPos, closedPos, tab, setTab }) {
           <div key={p.id} style={{ marginBottom:7, padding:9, borderRadius:8, background:'#141828', border:'1px solid rgba(255,255,255,0.06)' }}>
             <div style={{ display:'flex', justifyContent:'space-between', marginBottom:3 }}>
               <span style={{ fontSize:11, fontWeight:700, textTransform:'capitalize',
-                color:p.status==='open'?'#3b7bff':p.status==='won'?'#00c97b':'#ff4757' }}>
+                color:p.status==='open'?'#d99332':p.status==='won'?'#00c97b':'#ff4757' }}>
                 {p.type} {p.status!=='open'&&`— ${p.status}`}
               </span>
               <span style={{ fontSize:10, color:'#515c72' }}>{p.time}</span>
@@ -458,9 +458,9 @@ export default function Dashboard() {
           .desk-shell{display:flex!important}
         }
         .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 0;border:none;background:transparent;cursor:pointer;color:#8892a4;font-size:10px;font-weight:500}
-        .bnav-btn.act{color:#3b7bff}
+        .bnav-btn.act{color:#d99332}
         .tab-btn{flex-shrink:0;padding:9px 14px;font-size:12px;font-weight:600;color:#8892a4;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;white-space:nowrap}
-        .tab-btn.act{color:#3b7bff;border-bottom-color:#3b7bff}
+        .tab-btn.act{color:#d99332;border-bottom-color:#d99332}
         .navlink{display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;color:#8892a4;font-size:12px;font-weight:500;background:transparent;border:none;cursor:pointer;white-space:nowrap}
         .navlink:hover{color:#e2e8f0;background:rgba(255,255,255,0.05)}
         .icobtn{width:30px;height:30px;border-radius:7px;border:none;cursor:pointer;background:transparent;color:#8892a4;display:flex;align-items:center;justify-content:center}
@@ -472,11 +472,11 @@ export default function Dashboard() {
         {/* ══ BANNER ══ */}
         {showBanner && (
           <div style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 14px', background:'#1a1f35', borderBottom:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
-            <div style={{ width:30, height:30, borderRadius:8, background:'#3b7bff', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            <div style={{ width:30, height:30, borderRadius:8, background:'#d99332', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             </div>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontSize:11, fontWeight:700 }}>Get the TagOption App</div>
+              <div style={{ fontSize:11, fontWeight:700 }}>Get the AlphaFx App</div>
               <div style={{ fontSize:10, color:'#8892a4' }}>Get a better trading experience</div>
             </div>
             <button style={{ padding:'4px 10px', borderRadius:6, border:'1px solid rgba(255,255,255,0.2)', background:'transparent', color:'#fff', fontSize:11, fontWeight:600, cursor:'pointer' }}>Download</button>
@@ -489,7 +489,7 @@ export default function Dashboard() {
         {/* ══ DESKTOP NAV ══ */}
         <div className="d-nav" style={{ alignItems:'center', gap:2, padding:'0 14px', height:50, background:'#0f1220', borderBottom:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
           {/* Logo */}
-          <div style={{ width:34, height:34, borderRadius:9, background:'#3b7bff', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginRight:6 }}>
+          <div style={{ width:34, height:34, borderRadius:9, background:'#d99332', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginRight:6 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
           </div>
           {/* Nav links */}
@@ -503,14 +503,14 @@ export default function Dashboard() {
             <button key={label} className="navlink">{icon}{label}</button>
           ))}
           {/* TO trader badge */}
-          <button style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 10px', borderRadius:8, background:'#3b7bff', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer', border:'none', flexShrink:0, marginLeft:4 }}>
+          <button style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 10px', borderRadius:8, background:'#d99332', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer', border:'none', flexShrink:0, marginLeft:4 }}>
             <span style={{ width:18, height:18, borderRadius:4, background:'rgba(255,255,255,0.25)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:800 }}>TO</span>
-            TagOption Trader
+            AlphaFx Trader
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div style={{ flex:1 }}/>
           {/* Right controls */}
-          <button style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 9px', borderRadius:7, border:'none', cursor:'pointer', background:'rgba(59,123,255,0.15)', color:'#3b7bff', fontSize:11, fontWeight:700, marginRight:4 }}>
+          <button style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 9px', borderRadius:7, border:'none', cursor:'pointer', background:'rgba(217,147,50,0.15)', color:'#d99332', fontSize:11, fontWeight:700, marginRight:4 }}>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>AI
           </button>
           <button className="icobtn" onClick={() => setMuted(m=>!m)}><SoundIcon/></button>
@@ -521,12 +521,12 @@ export default function Dashboard() {
             <span style={{ fontWeight:700, color:'#e2e8f0', fontSize:13 }}>$ {balance.toFixed(2)}</span>
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
-          <button style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', background:'#3b7bff', color:'#fff', fontSize:13, fontWeight:700 }}>Deposit</button>
+          <button style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', background:'#d99332', color:'#fff', fontSize:13, fontWeight:700 }}>Deposit</button>
           <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#8892a4', padding:'0 6px', position:'relative' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
             <span style={{ position:'absolute', top:-3, right:2, width:14, height:14, borderRadius:'50%', background:'#ff4757', color:'#fff', fontSize:8, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>2</span>
           </button>
-          <div style={{ width:30, height:30, borderRadius:'50%', background:'#3b7bff', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, cursor:'pointer', marginLeft:4 }}>
+          <div style={{ width:30, height:30, borderRadius:'50%', background:'#d99332', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, cursor:'pointer', marginLeft:4 }}>
             {user?.name?.[0]?.toUpperCase()||'T'}
           </div>
         </div>
@@ -536,7 +536,7 @@ export default function Dashboard() {
           <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#8892a4', padding:3 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <div style={{ width:27, height:27, borderRadius:'50%', background:'#3b7bff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff', flexShrink:0 }}>
+          <div style={{ width:27, height:27, borderRadius:'50%', background:'#d99332', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff', flexShrink:0 }}>
             {user?.name?.[0]?.toUpperCase()||'T'}
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 7px', borderRadius:7, border:'1px solid rgba(255,255,255,0.1)', background:'#141828' }}>
@@ -546,7 +546,7 @@ export default function Dashboard() {
           </div>
           <div style={{ flex:1 }}/>
           <button onClick={() => setMuted(m=>!m)} className="icobtn"><SoundIcon/></button>
-          <button style={{ padding:'5px 12px', borderRadius:7, border:'none', background:'#3b7bff', color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer' }}>Deposit</button>
+          <button style={{ padding:'5px 12px', borderRadius:7, border:'none', background:'#d99332', color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer' }}>Deposit</button>
           <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#8892a4', padding:3 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
           </button>
@@ -606,7 +606,7 @@ export default function Dashboard() {
                 : [...openPos,...closedPos].map(p => (
                     <div key={p.id} style={{ marginBottom:6, padding:10, borderRadius:8, background:'#141828', border:'1px solid rgba(255,255,255,0.06)' }}>
                       <div style={{ display:'flex', justifyContent:'space-between', marginBottom:3 }}>
-                        <span style={{ fontSize:12, fontWeight:700, textTransform:'capitalize', color:p.status==='open'?'#3b7bff':p.status==='won'?'#00c97b':'#ff4757' }}>{p.type} {p.status!=='open'&&`— ${p.status}`}</span>
+                        <span style={{ fontSize:12, fontWeight:700, textTransform:'capitalize', color:p.status==='open'?'#d99332':p.status==='won'?'#00c97b':'#ff4757' }}>{p.type} {p.status!=='open'&&`— ${p.status}`}</span>
                         <span style={{ fontSize:10, color:'#515c72' }}>{p.time}</span>
                       </div>
                       {p.status==='open'
@@ -620,11 +620,11 @@ export default function Dashboard() {
           )}
           {bottomTab==='ai' && (
             <div style={{ background:'#0f1220', maxHeight:'46vh', borderTop:'1px solid rgba(255,255,255,0.07)', padding:20, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10 }}>
-              <div style={{ width:46, height:46, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#3b7bff)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <div style={{ width:46, height:46, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#d99332)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </div>
               <div style={{ textAlign:'center' }}>
-                <div style={{ fontSize:14, fontWeight:700, marginBottom:4 }}>TagOption AI</div>
+                <div style={{ fontSize:14, fontWeight:700, marginBottom:4 }}>AlphaFx AI</div>
                 <div style={{ fontSize:11, color:'#8892a4' }}>AI signals coming soon.</div>
               </div>
             </div>
@@ -632,7 +632,7 @@ export default function Dashboard() {
           {/* Bottom nav bar */}
           <div style={{ display:'flex', background:'#0f1220', borderTop:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
             {[['trade','Trade',<svg key="t" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>],
-              ['ai','AI',<div key="ai" style={{ width:26, height:26, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed55,#3b7bff55)', display:'flex', alignItems:'center', justifyContent:'center' }}><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>],
+              ['ai','AI',<div key="ai" style={{ width:26, height:26, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed55,#d9933255)', display:'flex', alignItems:'center', justifyContent:'center' }}><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>],
               ['positions','Positions',<svg key="p" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>]
             ].map(([key,label,icon]) => (
               <button key={key} className={`bnav-btn ${bottomTab===key?'act':''}`} onClick={() => setBottomTab(key)}>{icon}{label}</button>

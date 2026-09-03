@@ -163,7 +163,7 @@ const FEATURES = [
 ]
 
 const REVIEWS = [
-  { name:'Alex M.',  initials:'AM', loc:'USA',     text:"Switched from three other platforms. TagOption is the fastest and most reliable by far." },
+  { name:'Alex M.',  initials:'AM', loc:'USA',     text:"Switched from three other platforms. AlphaFx is the fastest and most reliable by far." },
   { name:'Sarah K.', initials:'SK', loc:'UK',      text:"From crypto to forex, everything in one place. The interface is buttery smooth." },
   { name:'James W.', initials:'JW', loc:'Germany', text:"10 years of trading experience and this is the best platform I've ever used." },
   { name:'Maria G.', initials:'MG', loc:'Brazil',  text:"Started with demo and now trade real money. Withdrawals are super fast!" },
@@ -223,12 +223,12 @@ export default function LandingPage() {
       `}</style>
 
       {/* ══ NAV ══ */}
-      <nav style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 20px', position:'sticky', top:0, zIndex:50, background:'rgba(11,13,20,0.95)', backdropFilter:'blur(16px)', borderBottom:'1px solid var(--border)' }}>
+      <nav style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 20px', position:'sticky', top:0, zIndex:50, background:'rgba(9,11,16,0.96)', backdropFilter:'blur(16px)', borderBottom:'1px solid var(--border)' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:8, textDecoration:'none', color:'inherit', flexShrink:0 }}>
           <div style={{ width:30, height:30, borderRadius:8, background:'var(--blue)', display:'flex', alignItems:'center', justifyContent:'center' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
           </div>
-          <span style={{ fontWeight:700, fontSize:17 }}>TagOption</span>
+          <span style={{ fontWeight:700, fontSize:17 }}>AlphaFx</span>
         </Link>
 
         {/* Desktop nav links */}
@@ -253,84 +253,21 @@ export default function LandingPage() {
 
       {/* ══ HERO ══ */}
       <section style={{ textAlign:'center', padding:'60px 20px 36px', position:'relative', overflow:'hidden' }}>
-        <div style={{ position:'absolute', inset:0, pointerEvents:'none', background:'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(59,123,255,0.13), transparent)' }}/>
+        <div style={{ position:'absolute', inset:0, pointerEvents:'none', background:'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(217,119,36,0.12), transparent)' }}/>
         <div style={{ position:'relative', maxWidth:700, margin:'0 auto' }}>
           {/* Badge */}
-          <div style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'7px 16px', borderRadius:999, fontSize:13, marginBottom:24, background:'rgba(59,123,255,0.1)', border:'1px solid rgba(59,123,255,0.25)', color:'var(--blue)' }}>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'7px 16px', borderRadius:999, fontSize:13, marginBottom:24, background:'rgba(217,147,50,0.1)', border:'1px solid rgba(217,147,50,0.25)', color:'var(--blue)' }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             Over 1 million traders and counting
           </div>
           <h1 style={{ fontSize:'clamp(34px, 6vw, 62px)', fontWeight:800, lineHeight:1.1, marginBottom:18, letterSpacing:-1 }}>
             Trading Made Easy,{' '}
-            <span style={{ background:'linear-gradient(135deg, #3b7bff, #00c97b)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>Trade Smart</span>
+            <span style={{ background:'linear-gradient(135deg, #d99332, #e6ad4c)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>Trade Smart</span>
           </h1>
           <p style={{ fontSize:'clamp(14px, 2.5vw, 17px)', color:'var(--text-secondary)', lineHeight:1.65, maxWidth:480, margin:'0 auto 28px' }}>
             Trade 100+ assets worldwide with lightning execution and up to 95% returns. Start with as little as $10.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="btn-row">
-            <Link href="/register" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 26px', borderRadius:12, fontWeight:600, fontSize:15, background:'var(--blue)', color:'#fff', textDecoration:'none', whiteSpace:'nowrap' }}>
-              Get Started — It&apos;s Free →
-            </Link>
-            <Link href="/dashboard" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', borderRadius:12, fontWeight:600, fontSize:15, border:'1px solid var(--border)', color:'var(--text-primary)', textDecoration:'none', whiteSpace:'nowrap' }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Try Demo
-            </Link>
-          </div>
-
-          {/* Trust badges */}
-          <div className="badge-row">
-            {[
-              [<svg key="a" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, '<1s execution'],
-              [<svg key="b" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><line x1="12" y1="6" x2="12" y2="18"/></svg>, 'Up to 95% payout'],
-              [<svg key="c" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, 'Bank-level security'],
-              [<svg key="d" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>, 'Zero fees'],
-            ].map(([icon,text],i) => (
-              <div key={i} style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'6px 14px', borderRadius:999, fontSize:12, background:'var(--bg-card)', border:'1px solid var(--border)', color:'var(--text-secondary)' }}>
-                {icon} {text}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ TICKER ══ */}
-      <Ticker/>
-
-      {/* ══ CHART + LIVE TRADES ══ */}
-      <section style={{ maxWidth:960, margin:'0 auto', padding:'48px 20px' }}>
-        <div className="hero-grid">
-          <HeroChart/>
-          <LiveTrades/>
-        </div>
-      </section>
-
-      {/* ══ FEATURES ══ */}
-      <section id="features" style={{ background:'var(--bg-secondary)', padding:'72px 20px', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }}>
-        <div style={{ maxWidth:960, margin:'0 auto' }}>
-          <div style={{ textAlign:'center', marginBottom:8 }}>
-            <span style={{ fontSize:11, fontWeight:700, letterSpacing:2, textTransform:'uppercase', color:'var(--blue)' }}>Platform</span>
-          </div>
-          <div style={{ textAlign:'center', marginBottom:44 }}>
-            <h2 style={{ fontSize:'clamp(24px, 4vw, 38px)', fontWeight:700 }}>Built for serious traders</h2>
-          </div>
-          <div className="feat-grid">
-            {FEATURES.map(f => (
-              <div key={f.title} style={{ padding:'22px 20px', borderRadius:14, background:'var(--bg-card)', border:'1px solid var(--border)' }}>
-                <div style={{ width:42, height:42, borderRadius:12, background:'rgba(59,123,255,0.12)', border:'1px solid rgba(59,123,255,0.2)', color:'var(--blue)', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:14 }}>
-                  {f.svg}
-                </div>
-                <div style={{ fontWeight:600, fontSize:15, marginBottom:6 }}>{f.title}</div>
-                <div style={{ fontSize:13, color:'var(--text-secondary)', lineHeight:1.6 }}>{f.desc}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{ textAlign:'center', marginTop:36 }}>
-            <Link href="/register" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'11px 26px', borderRadius:10, fontWeight:600, fontSize:14, background:'var(--blue)', color:'#fff', textDecoration:'none' }}>
-              Get started →
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -360,48 +297,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ══ STATS ══ */}
-      <div style={{ borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)', background:'var(--bg-secondary)' }}>
-        <div style={{ maxWidth:800, margin:'0 auto' }}>
-          <div className="stats-grid" style={{ padding:'40px 20px' }}>
-            {[['1M+','Active traders'],['$2B+','Total traded'],['150+','Countries'],['4.9/5','User rating']].map(([v,l]) => (
-              <div key={l} style={{ textAlign:'center', padding:'12px 8px' }}>
-                <div style={{ fontSize:'clamp(26px, 4vw, 40px)', fontWeight:800, marginBottom:4 }}>{v}</div>
-                <div style={{ fontSize:13, color:'var(--text-secondary)' }}>{l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ══ REVIEWS ══ */}
-      <section id="reviews" style={{ padding:'72px 20px' }}>
-        <div style={{ maxWidth:980, margin:'0 auto' }}>
-          <div style={{ textAlign:'center', marginBottom:8 }}>
-            <span style={{ fontSize:11, fontWeight:700, letterSpacing:2, textTransform:'uppercase', color:'var(--blue)' }}>Wall of love</span>
-          </div>
-          <div style={{ textAlign:'center', marginBottom:44 }}>
-            <h2 style={{ fontSize:'clamp(24px, 4vw, 38px)', fontWeight:700 }}>What traders say</h2>
-          </div>
-          <div className="review-grid">
-            {REVIEWS.map(r => (
-              <div key={r.name} style={{ padding:'20px', borderRadius:14, background:'var(--bg-card)', border:'1px solid var(--border)' }}>
-                <div style={{ display:'flex', gap:3, marginBottom:12 }}>
-                  {[...Array(5)].map((_,i) => <span key={i} style={{ color:'#fbbf24', fontSize:15 }}>★</span>)}
-                </div>
-                <p style={{ fontSize:13, color:'var(--text-secondary)', lineHeight:1.65, marginBottom:16 }}>&quot;{r.text}&quot;</p>
-                <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                  <div style={{ width:36, height:36, borderRadius:'50%', background:'var(--blue)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, flexShrink:0 }}>{r.initials}</div>
-                  <div>
-                    <div style={{ fontSize:13, fontWeight:600 }}>{r.name}</div>
-                    <div style={{ fontSize:11, color:'var(--text-secondary)' }}>{r.loc}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ══ CTA ══ */}
       <section style={{ background:'var(--bg-secondary)', borderTop:'1px solid var(--border)', padding:'72px 20px', textAlign:'center' }}>
@@ -428,13 +323,13 @@ export default function LandingPage() {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               </div>
               <div>
-                <div style={{ fontWeight:700, fontSize:16 }}>TagOption</div>
+                <div style={{ fontWeight:700, fontSize:16 }}>AlphaFx</div>
                 <div style={{ fontSize:12, color:'var(--blue)', fontWeight:500 }}>Android App Available</div>
               </div>
             </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontWeight:600, fontSize:15, marginBottom:4 }}>Trade on the go</div>
-              <div style={{ fontSize:13, color:'var(--text-secondary)', lineHeight:1.5 }}>Download the TagOption app and get a better trading experience on mobile.</div>
+              <div style={{ fontSize:13, color:'var(--text-secondary)', lineHeight:1.5 }}>Download the AlphaFx app and get a better trading experience on mobile.</div>
             </div>
             <div style={{ flexShrink:0 }}>
               <Link href="#" style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'10px 20px', borderRadius:10, fontWeight:600, fontSize:13, background:'var(--blue)', color:'#fff', textDecoration:'none' }}>
@@ -451,14 +346,14 @@ export default function LandingPage() {
               <div style={{ width:26, height:26, borderRadius:7, background:'var(--blue)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
               </div>
-              <span style={{ fontWeight:700 }}>TagOption</span>
+              <span style={{ fontWeight:700 }}>AlphaFx</span>
             </Link>
             <div style={{ display:'flex', gap:20, flexWrap:'wrap', justifyContent:'center' }}>
               {['Privacy','Terms','Support'].map(l => (
                 <a key={l} href="#" style={{ fontSize:13, color:'var(--text-secondary)', textDecoration:'none' }}>{l}</a>
               ))}
             </div>
-            <div style={{ fontSize:13, color:'var(--text-muted)' }}>© 2026 TagOption</div>
+            <div style={{ fontSize:13, color:'var(--text-muted)' }}>© 2026 AlphaFx</div>
           </div>
         </div>
       </footer>

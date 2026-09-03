@@ -21,19 +21,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight:'100vh', display:'flex', background:'#0b0d14', color:'#e2e8f0', fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', display:'flex', background:'#090b10', color:'#e2e8f0', fontFamily:"'DM Sans',sans-serif" }}>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         .log-panel{display:flex;width:44%;flex-shrink:0;flex-direction:column;justify-content:center;
-          padding:60px 56px;background:linear-gradient(145deg,#1a4fd6 0%,#3b7bff 55%,#2563eb 100%);
+          padding:60px 56px;background:linear-gradient(145deg,#3a2414 0%,#d99332 55%,#5a3216 100%);
           position:relative;overflow:hidden;min-height:100vh}
         @media(max-width:680px){.log-panel{display:none}}
         .log-form-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
           padding:40px 24px;overflow-y:auto;min-height:100vh}
         .log-input{width:100%;padding:12px 14px 12px 42px;border-radius:12px;background:#141828;
           color:#e2e8f0;font-size:14px;outline:none;transition:border-color 0.2s;font-family:inherit}
-        .log-input:focus{border-color:#3b7bff}
-        .log-btn{width:100%;padding:14px;border-radius:12px;background:#3b7bff;color:#fff;
+        .log-input:focus{border-color:#d99332}
+        .log-btn{width:100%;padding:14px;border-radius:12px;background:#d99332;color:#fff;
           font-weight:700;font-size:15px;border:none;cursor:pointer;transition:opacity 0.2s;font-family:inherit}
         .log-btn:disabled{opacity:0.65;cursor:not-allowed}
         .log-btn:hover:not(:disabled){opacity:0.9}
@@ -49,7 +49,7 @@ export default function LoginPage() {
           <div style={{ width:36,height:36,borderRadius:10,background:'rgba(255,255,255,0.2)',display:'flex',alignItems:'center',justifyContent:'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
           </div>
-          <span style={{ fontWeight:700,fontSize:18,color:'#fff' }}>TagOption</span>
+          <span style={{ fontWeight:700,fontSize:18,color:'#fff' }}>AlphaFx</span>
         </Link>
 
         <h2 style={{ fontSize:30,fontWeight:700,color:'#fff',marginBottom:14,lineHeight:1.25,position:'relative' }}>Welcome back,<br/>trader</h2>
@@ -72,10 +72,10 @@ export default function LoginPage() {
         {/* Mobile logo */}
         <div style={{ width:'100%',maxWidth:380,marginBottom:28 }}>
           <Link href="/" style={{ display:'inline-flex',alignItems:'center',gap:8,textDecoration:'none',color:'inherit' }}>
-            <div style={{ width:30,height:30,borderRadius:8,background:'#3b7bff',display:'flex',alignItems:'center',justifyContent:'center' }}>
+            <div style={{ width:30,height:30,borderRadius:8,background:'#d99332',display:'flex',alignItems:'center',justifyContent:'center' }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
             </div>
-            <span style={{ fontWeight:700,fontSize:16 }}>TagOption</span>
+            <span style={{ fontWeight:700,fontSize:16 }}>AlphaFx</span>
           </Link>
         </div>
 
@@ -91,7 +91,7 @@ export default function LoginPage() {
               <input type="email" placeholder="you@example.com" value={form.email}
                 onChange={e=>setForm(f=>({...f,email:e.target.value}))}
                 onFocus={()=>setFocus('email')} onBlur={()=>setFocus('')}
-                className="log-input" style={{ border:`1.5px solid ${focus==='email'?'#3b7bff':'rgba(255,255,255,0.08)'}` }}/>
+                className="log-input" style={{ border:`1.5px solid ${focus==='email'?'#d99332':'rgba(255,255,255,0.08)'}` }}/>
             </div>
           </div>
 
@@ -99,7 +99,7 @@ export default function LoginPage() {
           <div style={{ marginBottom:24 }}>
             <div style={{ display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6 }}>
               <label style={{ fontSize:12,fontWeight:600,color:'#8892a4' }}>Password</label>
-              <a href="#" style={{ fontSize:12,color:'#3b7bff',textDecoration:'none' }}>Forgot password?</a>
+              <a href="#" style={{ fontSize:12,color:'#d99332',textDecoration:'none' }}>Forgot password?</a>
             </div>
             <div style={{ position:'relative' }}>
               <span className="log-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
@@ -107,7 +107,7 @@ export default function LoginPage() {
                 onChange={e=>setForm(f=>({...f,password:e.target.value}))}
                 onFocus={()=>setFocus('password')} onBlur={()=>setFocus('')}
                 onKeyDown={e=>e.key==='Enter'&&handleSubmit()}
-                className="log-input" style={{ border:`1.5px solid ${focus==='password'?'#3b7bff':'rgba(255,255,255,0.08)'}`,paddingRight:44 }}/>
+                className="log-input" style={{ border:`1.5px solid ${focus==='password'?'#d99332':'rgba(255,255,255,0.08)'}`,paddingRight:44 }}/>
               <button onClick={()=>setShowPass(s=>!s)} style={{ position:'absolute',right:13,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'#515c72',display:'flex',padding:0 }}>
                 {showPass
                   ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -127,7 +127,7 @@ export default function LoginPage() {
 
           <p style={{ textAlign:'center',fontSize:14,color:'#8892a4' }}>
             Don&apos;t have an account?{' '}
-            <Link href="/register" style={{ color:'#3b7bff',fontWeight:600,textDecoration:'none' }}>Create one free</Link>
+            <Link href="/register" style={{ color:'#d99332',fontWeight:600,textDecoration:'none' }}>Create one free</Link>
           </p>
         </div>
       </div>

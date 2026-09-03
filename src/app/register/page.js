@@ -24,19 +24,19 @@ export default function RegisterPage() {
   }
 
   return (
-    <div style={{ minHeight:'100vh', display:'flex', background:'#0b0d14', color:'#e2e8f0', fontFamily:"'DM Sans',sans-serif" }}>
+    <div style={{ minHeight:'100vh', display:'flex', background:'#090b10', color:'#e2e8f0', fontFamily:"'DM Sans',sans-serif" }}>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         .reg-panel{display:flex;width:44%;flex-shrink:0;flex-direction:column;justify-content:center;
-          padding:60px 56px;background:linear-gradient(145deg,#1a4fd6 0%,#3b7bff 55%,#2563eb 100%);
+          padding:60px 56px;background:linear-gradient(145deg,#3a2414 0%,#d99332 55%,#5a3216 100%);
           position:relative;overflow:hidden;min-height:100vh}
         @media(max-width:680px){.reg-panel{display:none}}
         .reg-form-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
           padding:40px 24px;overflow-y:auto;min-height:100vh}
         .reg-input{width:100%;padding:12px 14px 12px 42px;border-radius:12px;background:#141828;
           color:#e2e8f0;font-size:14px;outline:none;transition:border-color 0.2s;font-family:inherit}
-        .reg-input:focus{border-color:#3b7bff}
-        .reg-btn{width:100%;padding:14px;border-radius:12px;background:#3b7bff;color:#fff;
+        .reg-input:focus{border-color:#d99332}
+        .reg-btn{width:100%;padding:14px;border-radius:12px;background:#d99332;color:#fff;
           font-weight:700;font-size:15px;border:none;cursor:pointer;transition:opacity 0.2s;font-family:inherit}
         .reg-btn:disabled{opacity:0.65;cursor:not-allowed}
         .reg-btn:hover:not(:disabled){opacity:0.9}
@@ -52,7 +52,7 @@ export default function RegisterPage() {
           <div style={{ width:36,height:36,borderRadius:10,background:'rgba(255,255,255,0.2)',display:'flex',alignItems:'center',justifyContent:'center' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
           </div>
-          <span style={{ fontWeight:700,fontSize:18,color:'#fff' }}>TagOption</span>
+          <span style={{ fontWeight:700,fontSize:18,color:'#fff' }}>AlphaFx</span>
         </Link>
 
         <h2 style={{ fontSize:30,fontWeight:700,color:'#fff',marginBottom:14,lineHeight:1.25,position:'relative' }}>Start your trading<br/>journey today</h2>
@@ -75,10 +75,10 @@ export default function RegisterPage() {
         {/* Mobile logo */}
         <div style={{ width:'100%',maxWidth:380,marginBottom:28 }}>
           <Link href="/" style={{ display:'inline-flex',alignItems:'center',gap:8,textDecoration:'none',color:'inherit' }}>
-            <div style={{ width:30,height:30,borderRadius:8,background:'#3b7bff',display:'flex',alignItems:'center',justifyContent:'center' }}>
+            <div style={{ width:30,height:30,borderRadius:8,background:'#d99332',display:'flex',alignItems:'center',justifyContent:'center' }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
             </div>
-            <span style={{ fontWeight:700,fontSize:16 }}>TagOption</span>
+            <span style={{ fontWeight:700,fontSize:16 }}>AlphaFx</span>
           </Link>
         </div>
 
@@ -94,7 +94,7 @@ export default function RegisterPage() {
               <input type="text" placeholder="John Doe" value={form.name}
                 onChange={e => setForm(f=>({...f,name:e.target.value}))}
                 onFocus={()=>setFocus('name')} onBlur={()=>setFocus('')}
-                className="reg-input" style={{ border:`1.5px solid ${focus==='name'?'#3b7bff':'rgba(255,255,255,0.08)'}` }}/>
+                className="reg-input" style={{ border:`1.5px solid ${focus==='name'?'#d99332':'rgba(255,255,255,0.08)'}` }}/>
             </div>
           </div>
 
@@ -106,7 +106,7 @@ export default function RegisterPage() {
               <input type="email" placeholder="you@example.com" value={form.email}
                 onChange={e => setForm(f=>({...f,email:e.target.value}))}
                 onFocus={()=>setFocus('email')} onBlur={()=>setFocus('')}
-                className="reg-input" style={{ border:`1.5px solid ${focus==='email'?'#3b7bff':'rgba(255,255,255,0.08)'}` }}/>
+                className="reg-input" style={{ border:`1.5px solid ${focus==='email'?'#d99332':'rgba(255,255,255,0.08)'}` }}/>
             </div>
           </div>
 
@@ -118,7 +118,7 @@ export default function RegisterPage() {
               <input type={showPass?'text':'password'} placeholder="Min 6 characters" value={form.password}
                 onChange={e => setForm(f=>({...f,password:e.target.value}))}
                 onFocus={()=>setFocus('password')} onBlur={()=>setFocus('')}
-                className="reg-input" style={{ border:`1.5px solid ${focus==='password'?'#3b7bff':'rgba(255,255,255,0.08)'}`,paddingRight:44 }}/>
+                className="reg-input" style={{ border:`1.5px solid ${focus==='password'?'#d99332':'rgba(255,255,255,0.08)'}`,paddingRight:44 }}/>
               <button onClick={()=>setShowPass(s=>!s)} style={{ position:'absolute',right:13,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'#515c72',display:'flex',padding:0 }}>
                 {showPass
                   ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -137,17 +137,17 @@ export default function RegisterPage() {
                 onChange={e => setForm(f=>({...f,confirm:e.target.value}))}
                 onFocus={()=>setFocus('confirm')} onBlur={()=>setFocus('')}
                 onKeyDown={e=>e.key==='Enter'&&handleSubmit()}
-                className="reg-input" style={{ border:`1.5px solid ${focus==='confirm'?'#3b7bff':'rgba(255,255,255,0.08)'}` }}/>
+                className="reg-input" style={{ border:`1.5px solid ${focus==='confirm'?'#d99332':'rgba(255,255,255,0.08)'}` }}/>
             </div>
           </div>
 
           {/* Terms */}
           <div style={{ display:'flex',alignItems:'flex-start',gap:10,marginBottom:18 }}>
             <input type="checkbox" id="terms" checked={agreed} onChange={e=>setAgreed(e.target.checked)}
-              style={{ width:16,height:16,marginTop:2,accentColor:'#3b7bff',cursor:'pointer',flexShrink:0 }}/>
+              style={{ width:16,height:16,marginTop:2,accentColor:'#d99332',cursor:'pointer',flexShrink:0 }}/>
             <label htmlFor="terms" style={{ fontSize:13,color:'#8892a4',cursor:'pointer',lineHeight:1.5 }}>
-              I agree to the{' '}<a href="#" style={{ color:'#3b7bff',textDecoration:'none' }}>Terms of Service</a>{' '}and{' '}
-              <a href="#" style={{ color:'#3b7bff',textDecoration:'none' }}>Privacy Policy</a>
+              I agree to the{' '}<a href="#" style={{ color:'#d99332',textDecoration:'none' }}>Terms of Service</a>{' '}and{' '}
+              <a href="#" style={{ color:'#d99332',textDecoration:'none' }}>Privacy Policy</a>
             </label>
           </div>
 
@@ -161,7 +161,7 @@ export default function RegisterPage() {
 
           <p style={{ textAlign:'center',fontSize:14,color:'#8892a4' }}>
             Already have an account?{' '}
-            <Link href="/login" style={{ color:'#3b7bff',fontWeight:600,textDecoration:'none' }}>Sign in</Link>
+            <Link href="/login" style={{ color:'#d99332',fontWeight:600,textDecoration:'none' }}>Sign in</Link>
           </p>
         </div>
       </div>
