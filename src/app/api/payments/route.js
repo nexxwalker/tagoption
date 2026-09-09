@@ -16,7 +16,7 @@ async function getUser(request) {
 }
 
 async function darajaToken() {
-  const credentials = Buffer.from(`${process.env.DARAJA_CONSUMER_KEY}:${process.env.DARAJA_CONSUMER_SECRET}`).toString('base64')
+  const credentials = Buffer.from(`${process.env.Key}:${process.env.Secret}`).toString('base64')
   const response = await fetch(`${process.env.DARAJA_BASE_URL || 'https://sandbox.safaricom.co.ke'}/oauth/v1/generate?grant_type=client_credentials`, {
     headers: { Authorization: `Basic ${credentials}` },
     cache: 'no-store',
@@ -55,13 +55,16 @@ export async function POST(request) {
     }).select('id, type, amount, currency, status, created_at').single()
     if (insertError) throw insertError
 
+    const callbackUrl = process.env.DARAJA_CALLBACK_URL
+    if (!callbackUrl) throw new Error('Daraja callback URL is not configured')
+
     const accessToken = await darajaToken()
     const timestamp = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14)
-    const password = Buffer.from(`${process.env.DARAJA_SHORTCODE}${process.env.DARAJA_PASSKEY}${timestamp}`).toString('base64')
+    const password = Buffer.from(`${process.env.DARAJA_SHORTCODE || '4817173'}${process.env.Passkey}${timestamp}`).toString('base64')
     const endpoint = type === 'deposit' ? '/mpesa/stkpush/v1/processrequest' : '/mpesa/b2c/v1/paymentrequest'
     const payload = type === 'deposit'
-      ? { BusinessShortCode: process.env.DARAJA_SHORTCODE, Password: password, Timestamp: timestamp, TransactionType: 'CustomerPayBillOnline', Amount: Math.round(amount), PartyA: phoneNumber, PartyB: process.env.DARAJA_SHORTCODE, PhoneNumber: phoneNumber, CallBackURL: process.env.DARAJA_CALLBACK_URL, AccountReference: `AlphaFx-${transaction.id}`, TransactionDesc: 'AlphaFx deposit' }
-      : { InitiatorName: process.env.DARAJA_INITIATOR_NAME, SecurityCredential: process.env.DARAJA_SECURITY_CREDENTIAL, CommandID: 'BusinessPayment', Amount: Math.round(amount), PartyA: process.env.DARAJA_SHORTCODE, PartyB: phoneNumber, Remarks: `AlphaFx withdrawal ${transaction.id}`, QueueTimeOutURL: process.env.DARAJA_TIMEOUT_URL, ResultURL: process.env.DARAJA_RESULT_URL, Occasion: 'AlphaFx withdrawal' }
+      ? { BusinessShortCode: (process.env.DARAJA_SHORTCODE || '4817173'), Password: password, Timestamp: timestamp, TransactionType: 'CustomerPayBillOnline', Amount: Math.round(amount), PartyA: phoneNumber, PartyB: (process.env.DARAJA_SHORTCODE || '4817173'), PhoneNumber: phoneNumber, CallBackURL: callbackUrl, AccountReference: `AlphaFx-${transaction.id}`, TransactionDesc: 'AlphaFx deposit' }
+      : { InitiatorName: process.env.DARAJA_INITIATOR_NAME, SecurityCredential: process.env.DARAJA_SECURITY_CREDENTIAL, CommandID: 'BusinessPayment', Amount: Math.round(amount), PartyA: (process.env.DARAJA_SHORTCODE || '4817173'), PartyB: phoneNumber, Remarks: `AlphaFx withdrawal ${transaction.id}`, QueueTimeOutURL: process.env.DARAJA_TIMEOUT_URL, ResultURL: process.env.DARAJA_RESULT_URL, Occasion: 'AlphaFx withdrawal' }
 
     const response = await fetch(`${process.env.DARAJA_BASE_URL || 'https://sandbox.safaricom.co.ke'}${endpoint}`, {
       method: 'POST', headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload), cache: 'no-store',
