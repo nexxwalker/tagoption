@@ -233,7 +233,7 @@ export default function LandingPage() {
 
         {/* Desktop nav links */}
         <div className="nav-links">
-          {[['Features','#features'],['How It Works','#steps'],['Reviews','#reviews']].map(([label,href]) => (
+          {[['How It Works','#steps']].map(([label,href]) => (
             <a key={label} href={href} style={{ fontSize:14, color:'var(--text-secondary)', textDecoration:'none' }}>{label}</a>
           ))}
         </div>
@@ -324,7 +324,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <div style={{ fontWeight:700, fontSize:16 }}>AlphaFx</div>
-                <div style={{ fontSize:12, color:'var(--blue)', fontWeight:500 }}>Android App Available</div>
+                <div style={{ fontSize:12, color:'var(--blue)', fontWeight:500 }}>Mobile trading available</div>
               </div>
             </div>
             <div style={{ flex:1, minWidth:0 }}>
