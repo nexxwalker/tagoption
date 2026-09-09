@@ -19,7 +19,7 @@ export default function RegisterPage() {
     if (!agreed) { setError('Please agree to the Terms of Service.'); return }
     setError(''); setLoading(true)
     await new Promise(r => setTimeout(r, 900))
-    localStorage.setItem('tagoption_user', JSON.stringify({ name: form.name, email: form.email }))
+    localStorage.setItem('alphafx_user', JSON.stringify({ name: form.name, email: form.email }))
     router.push('/dashboard')
   }
 

@@ -162,13 +162,13 @@ function DigitRow({ ticks, mockTicks, size }) {
   )
 }
 
-/* ── Market Dropdown ── */
+/* ─����� Market Dropdown ── */
 function MktDropdown({ markets, market, setMarket, setShowMarketDrop }) {
   return (
-    <div style={{ position:'absolute', top:'calc(100% + 4px)', left:0, minWidth:220, background:'#141828', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, boxShadow:'0 8px 32px rgba(0,0,0,0.8)', zIndex:600, maxHeight:260, overflowY:'auto' }}>
+    <div style={{ position:'absolute', top:'calc(100% + 4px)', left:0, minWidth:220, background:'#151a22', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, boxShadow:'0 8px 32px rgba(0,0,0,0.8)', zIndex:600, maxHeight:260, overflowY:'auto' }}>
       {markets.map(m => (
         <button key={m.sym} onClick={() => { setMarket(m); setShowMarketDrop(false) }}
-          style={{ width:'100%', padding:'9px 14px', border:'none', background:market.sym===m.sym?'rgba(217,147,50,0.15)':'transparent', color:market.sym===m.sym?'#d99332':'#e2e8f0', fontSize:12, textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.04)', display:'flex', alignItems:'center', gap:8 }}>
+          style={{ width:'100%', padding:'9px 14px', border:'none', background:market.sym===m.sym?'rgba(217,147,50,0.15)':'transparent', color:market.sym===m.sym?'#d99332':'#f3f4f6', fontSize:12, textAlign:'left', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.04)', display:'flex', alignItems:'center', gap:8 }}>
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
           {m.label}
           {market.sym===m.sym&&<span style={{ marginLeft:'auto', width:5, height:5, borderRadius:'50%', background:'#00c97b', display:'inline-block'}}/>}
@@ -184,7 +184,7 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
     <div style={{ padding:'12px 14px', display:'flex', flexDirection:'column', gap:10 }}>
       {/* TRADING MODE */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-        <span style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'#8892a4' }}>TRADING MODE</span>
+        <span style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'#9ca3af' }}>TRADING MODE</span>
         <span style={{ fontSize:9, color:'#515c72' }}>Execution preferences</span>
       </div>
       {/* AUTO / MANUAL */}
@@ -193,7 +193,7 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
           <button key={m} onClick={() => setAutoMode(m==='AUTO')}
             style={{ flex:1, padding:'8px 0', border:'none', cursor:'pointer', fontSize:12, fontWeight:700,
               background:autoMode===(m==='AUTO')?'#d99332':'#141828',
-              color:autoMode===(m==='AUTO')?'#fff':'#8892a4' }}>{m}</button>
+              color:autoMode===(m==='AUTO')?'#fff':'#9ca3af' }}>{m}</button>
         ))}
       </div>
       {/* Type tabs */}
@@ -202,7 +202,7 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
           <button key={val} onClick={() => setTradeType(val)}
             style={{ flex:1, padding:'7px 4px', border:'none', cursor:'pointer', fontSize:10, fontWeight:600,
               background:tradeType===val?'rgba(217,147,50,0.18)':'#141828',
-              color:tradeType===val?'#d99332':'#8892a4',
+              color:tradeType===val?'#d99332':'#9ca3af',
               borderBottom:tradeType===val?'2px solid #d99332':'2px solid transparent',
               whiteSpace:'nowrap' }}>{label}</button>
         ))}
@@ -210,21 +210,21 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
       {/* STAKE AMOUNT */}
       <div>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-          <span style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'#8892a4' }}>STAKE AMOUNT</span>
+          <span style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'#9ca3af' }}>STAKE AMOUNT</span>
           <div style={{ display:'flex', gap:3 }}>
             <span style={{ fontSize:9, padding:'2px 8px', borderRadius:4, background:'#d99332', color:'#fff', fontWeight:700 }}>Stake</span>
-            <span style={{ fontSize:9, padding:'2px 8px', borderRadius:4, color:'#8892a4', fontWeight:600 }}>Payout</span>
+            <span style={{ fontSize:9, padding:'2px 8px', borderRadius:4, color:'#9ca3af', fontWeight:600 }}>Payout</span>
           </div>
         </div>
-        <div style={{ display:'flex', alignItems:'center', borderRadius:10, border:'1px solid rgba(255,255,255,0.1)', background:'#141828', padding:'6px 10px', marginBottom:6 }}>
+        <div style={{ display:'flex', alignItems:'center', borderRadius:10, border:'1px solid rgba(255,255,255,0.1)', background:'#151a22', padding:'6px 10px', marginBottom:6 }}>
           <button onClick={() => setStake(s=>Math.max(1,s-1))}
-            style={{ width:30, height:30, borderRadius:8, border:'none', cursor:'pointer', background:'rgba(255,255,255,0.08)', color:'#e2e8f0', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>−</button>
+            style={{ width:30, height:30, borderRadius:8, border:'none', cursor:'pointer', background:'rgba(255,255,255,0.08)', color:'#f3f4f6', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>−</button>
           <div style={{ flex:1, textAlign:'center' }}>
-            <span style={{ fontSize:12, color:'#8892a4', marginRight:2 }}>$</span>
+            <span style={{ fontSize:12, color:'#9ca3af', marginRight:2 }}>$</span>
             <span style={{ fontSize:26, fontWeight:700 }}>{stake}</span>
           </div>
           <button onClick={() => setStake(s=>s+1)}
-            style={{ width:30, height:30, borderRadius:8, border:'none', cursor:'pointer', background:'rgba(255,255,255,0.08)', color:'#e2e8f0', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>+</button>
+            style={{ width:30, height:30, borderRadius:8, border:'none', cursor:'pointer', background:'rgba(255,255,255,0.08)', color:'#f3f4f6', fontSize:20, display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>+</button>
         </div>
         <div style={{ display:'flex', gap:4 }}>
           {[1,5,10,25,50,100].map(v => (
@@ -233,13 +233,13 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
                 border:`1px solid ${stake===v?'#d99332':'rgba(255,255,255,0.07)'}`,
                 cursor:'pointer',
                 background:stake===v?'rgba(217,147,50,0.2)':'#141828',
-                color:stake===v?'#d99332':'#8892a4', fontSize:10, fontWeight:600 }}>${v}</button>
+                color:stake===v?'#d99332':'#9ca3af', fontSize:10, fontWeight:600 }}>${v}</button>
           ))}
         </div>
       </div>
       {/* Payout row */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'4px 0' }}>
-        <span style={{ fontSize:12, color:'#8892a4' }}>Payout</span>
+        <span style={{ fontSize:12, color:'#9ca3af' }}>Payout</span>
         <span style={{ fontSize:14, fontWeight:700 }}>{payout} <span style={{ fontSize:10, color:'#515c72' }}>USD</span></span>
       </div>
       {/* Cards */}
@@ -247,11 +247,11 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
         {[
           { label:'● TARGET PROFIT', val:'200', sym:'$', color:'#00c97b', border:'rgba(0,201,123,0.25)' },
           { label:'⚠ STOP LOSS',     val:'999', sym:'$', color:'#ff4757', border:'rgba(255,71,87,0.25)' },
-          { label:'× MULTIPLIER',    val:'2',   sym:'x', color:'#8892a4', border:'rgba(255,255,255,0.08)' },
+          { label:'× MULTIPLIER',    val:'2',   sym:'x', color:'#9ca3af', border:'rgba(255,255,255,0.08)' },
         ].map(({ label, val, sym, color, border }) => (
-          <div key={label} style={{ padding:'7px 8px', borderRadius:8, background:'#141828', border:`1px solid ${border}` }}>
+          <div key={label} style={{ padding:'7px 8px', borderRadius:8, background:'#151a22', border:`1px solid ${border}` }}>
             <div style={{ fontSize:7, fontWeight:700, color, marginBottom:3, lineHeight:1.2 }}>{label}</div>
-            <div style={{ fontSize:9, color:'#8892a4', marginBottom:1 }}>{sym}</div>
+            <div style={{ fontSize:9, color:'#9ca3af', marginBottom:1 }}>{sym}</div>
             <div style={{ fontSize:15, fontWeight:700 }}>{val}</div>
           </div>
         ))}
@@ -311,7 +311,7 @@ function PositionsList({ openPos, closedPos, tab, setTab }) {
         {[['open',`Open (${openPos.length})`],['closed',`Closed (${closedPos.length})`],['txns','Transactions']].map(([key,label]) => (
           <button key={key} onClick={() => setTab(key)}
             style={{ flex:1, padding:'10px 0', border:'none', cursor:'pointer', background:'transparent', fontSize:11, fontWeight:600,
-              color:tab===key?'#d99332':'#8892a4', borderBottom:tab===key?'2px solid #d99332':'2px solid transparent' }}>{label}</button>
+              color:tab===key?'#d99332':'#9ca3af', borderBottom:tab===key?'2px solid #d99332':'2px solid transparent' }}>{label}</button>
         ))}
       </div>
       <div style={{ flex:1, overflowY:'auto', padding:10 }} className="ns">
@@ -328,7 +328,7 @@ function PositionsList({ openPos, closedPos, tab, setTab }) {
         )}
         {tab==='txns' && <div style={{ textAlign:'center', color:'#515c72', fontSize:12, paddingTop:40 }}>No transactions yet</div>}
         {list.map(p => (
-          <div key={p.id} style={{ marginBottom:7, padding:9, borderRadius:8, background:'#141828', border:'1px solid rgba(255,255,255,0.06)' }}>
+          <div key={p.id} style={{ marginBottom:7, padding:9, borderRadius:8, background:'#151a22', border:'1px solid rgba(255,255,255,0.06)' }}>
             <div style={{ display:'flex', justifyContent:'space-between', marginBottom:3 }}>
               <span style={{ fontSize:11, fontWeight:700, textTransform:'capitalize',
                 color:p.status==='open'?'#d99332':p.status==='won'?'#00c97b':'#ff4757' }}>
@@ -337,7 +337,7 @@ function PositionsList({ openPos, closedPos, tab, setTab }) {
               <span style={{ fontSize:10, color:'#515c72' }}>{p.time}</span>
             </div>
             {p.status==='open'
-              ? <div style={{ fontSize:11, color:'#8892a4' }}>Stake ${p.stake} → ${p.payout} <span style={{ color:'#fbbf24' }}>Pending…</span></div>
+              ? <div style={{ fontSize:11, color:'#9ca3af' }}>Stake ${p.stake} → ${p.payout} <span style={{ color:'#fbbf24' }}>Pending…</span></div>
               : <div style={{ fontSize:13, fontWeight:700, color:p.profit>0?'#00c97b':'#ff4757' }}>{p.profit>0?'+':''}{p.profit?.toFixed(2)} USD</div>
             }
           </div>
@@ -387,7 +387,7 @@ export default function Dashboard() {
   const { ticks, price, connected } = useDerivWS(market.sym)
 
   useEffect(() => {
-    const s = localStorage.getItem('tagoption_user')
+    const s = localStorage.getItem('alphafx_user')
     if (!s) { router.push('/login'); return }
     setUser(JSON.parse(s))
   }, [router])
@@ -457,17 +457,17 @@ export default function Dashboard() {
           .m-bnav{display:none!important}
           .desk-shell{display:flex!important}
         }
-        .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 0;border:none;background:transparent;cursor:pointer;color:#8892a4;font-size:10px;font-weight:500}
+        .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 0;border:none;background:transparent;cursor:pointer;color:#9ca3af;font-size:10px;font-weight:500}
         .bnav-btn.act{color:#d99332}
-        .tab-btn{flex-shrink:0;padding:9px 14px;font-size:12px;font-weight:600;color:#8892a4;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;white-space:nowrap}
+        .tab-btn{flex-shrink:0;padding:9px 14px;font-size:12px;font-weight:600;color:#9ca3af;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;white-space:nowrap}
         .tab-btn.act{color:#d99332;border-bottom-color:#d99332}
-        .navlink{display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;color:#8892a4;font-size:12px;font-weight:500;background:transparent;border:none;cursor:pointer;white-space:nowrap}
-        .navlink:hover{color:#e2e8f0;background:rgba(255,255,255,0.05)}
-        .icobtn{width:30px;height:30px;border-radius:7px;border:none;cursor:pointer;background:transparent;color:#8892a4;display:flex;align-items:center;justify-content:center}
-        .icobtn:hover{background:rgba(255,255,255,0.06);color:#e2e8f0}
+        .navlink{display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;color:#9ca3af;font-size:12px;font-weight:500;background:transparent;border:none;cursor:pointer;white-space:nowrap}
+        .navlink:hover{color:#f3f4f6;background:rgba(255,255,255,0.05)}
+        .icobtn{width:30px;height:30px;border-radius:7px;border:none;cursor:pointer;background:transparent;color:#9ca3af;display:flex;align-items:center;justify-content:center}
+        .icobtn:hover{background:rgba(255,255,255,0.06);color:#f3f4f6}
       `}</style>
 
-      <div style={{ display:'flex', flexDirection:'column', height:'100dvh', background:'#0b0d14', color:'#e2e8f0', fontFamily:"'DM Sans',sans-serif", overflow:'hidden' }}>
+      <div style={{ display:'flex', flexDirection:'column', height:'100dvh', background:'#0b0d14', color:'#f3f4f6', fontFamily:"'DM Sans',sans-serif", overflow:'hidden' }}>
 
         {/* ══ BANNER ══ */}
         {showBanner && (
@@ -477,17 +477,17 @@ export default function Dashboard() {
             </div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:11, fontWeight:700 }}>Get the AlphaFx App</div>
-              <div style={{ fontSize:10, color:'#8892a4' }}>Get a better trading experience</div>
+              <div style={{ fontSize:10, color:'#9ca3af' }}>Get a better trading experience</div>
             </div>
             <button style={{ padding:'4px 10px', borderRadius:6, border:'1px solid rgba(255,255,255,0.2)', background:'transparent', color:'#fff', fontSize:11, fontWeight:600, cursor:'pointer' }}>Download</button>
-            <button onClick={() => setShowBanner(false)} style={{ width:20, height:20, borderRadius:4, border:'none', background:'rgba(255,255,255,0.08)', color:'#8892a4', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <button onClick={() => setShowBanner(false)} style={{ width:20, height:20, borderRadius:4, border:'none', background:'rgba(255,255,255,0.08)', color:'#9ca3af', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
         )}
 
         {/* ══ DESKTOP NAV ══ */}
-        <div className="d-nav" style={{ alignItems:'center', gap:2, padding:'0 14px', height:50, background:'#0f1220', borderBottom:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
+        <div className="d-nav" style={{ alignItems:'center', gap:2, padding:'0 14px', height:50, background:'#0e1118', borderBottom:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
           {/* Logo */}
           <div style={{ width:34, height:34, borderRadius:9, background:'#d99332', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginRight:6 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
@@ -510,19 +510,16 @@ export default function Dashboard() {
           </button>
           <div style={{ flex:1 }}/>
           {/* Right controls */}
-          <button style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 9px', borderRadius:7, border:'none', cursor:'pointer', background:'rgba(217,147,50,0.15)', color:'#d99332', fontSize:11, fontWeight:700, marginRight:4 }}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>AI
-          </button>
           <button className="icobtn" onClick={() => setMuted(m=>!m)}><SoundIcon/></button>
           <button className="icobtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
           {/* Balance */}
-          <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px', borderRadius:8, border:'1px solid rgba(255,255,255,0.08)', color:'#8892a4', fontSize:12, margin:'0 6px', cursor:'pointer' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px', borderRadius:8, border:'1px solid rgba(255,255,255,0.08)', color:'#9ca3af', fontSize:12, margin:'0 6px', cursor:'pointer' }}>
             <span style={{ width:17, height:17, borderRadius:4, background:'#ff4757', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, flexShrink:0 }}>R</span>
-            <span style={{ fontWeight:700, color:'#e2e8f0', fontSize:13 }}>$ {balance.toFixed(2)}</span>
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <span style={{ fontWeight:700, color:'#f3f4f6', fontSize:13 }}>$ {balance.toFixed(2)}</span>
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <button style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', background:'#d99332', color:'#fff', fontSize:13, fontWeight:700 }}>Deposit</button>
-          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#8892a4', padding:'0 6px', position:'relative' }}>
+          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:'0 6px', position:'relative' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
             <span style={{ position:'absolute', top:-3, right:2, width:14, height:14, borderRadius:'50%', background:'#ff4757', color:'#fff', fontSize:8, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>2</span>
           </button>
@@ -532,22 +529,22 @@ export default function Dashboard() {
         </div>
 
         {/* ══ MOBILE NAV ══ */}
-        <div className="m-nav" style={{ alignItems:'center', gap:6, padding:'0 10px', height:44, background:'#0f1220', borderBottom:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
-          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#8892a4', padding:3 }}>
+        <div className="m-nav" style={{ alignItems:'center', gap:6, padding:'0 10px', height:44, background:'#0e1118', borderBottom:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
+          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:3 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <div style={{ width:27, height:27, borderRadius:'50%', background:'#d99332', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff', flexShrink:0 }}>
             {user?.name?.[0]?.toUpperCase()||'T'}
           </div>
-          <div style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 7px', borderRadius:7, border:'1px solid rgba(255,255,255,0.1)', background:'#141828' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 7px', borderRadius:7, border:'1px solid rgba(255,255,255,0.1)', background:'#151a22' }}>
             <span style={{ width:16, height:16, borderRadius:4, background:'#ff4757', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, flexShrink:0 }}>R</span>
             <span style={{ fontSize:12, fontWeight:700 }}>$ {balance.toFixed(2)}</span>
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <div style={{ flex:1 }}/>
           <button onClick={() => setMuted(m=>!m)} className="icobtn"><SoundIcon/></button>
           <button style={{ padding:'5px 12px', borderRadius:7, border:'none', background:'#d99332', color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer' }}>Deposit</button>
-          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#8892a4', padding:3 }}>
+          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:3 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
           </button>
         </div>
@@ -569,10 +566,10 @@ export default function Dashboard() {
           {/* chart toolbar */}
           <div style={{ display:'flex', alignItems:'center', gap:6, padding:'0 6px', height:34, background:'#0b0d14', borderBottom:'1px solid rgba(255,255,255,0.06)', flexShrink:0 }}>
             <div style={{ position:'relative', flexShrink:0 }} ref={mobileMarketDropRef}>
-              <button onClick={() => setShowMarketDrop(d=>!d)} style={{ display:'flex', alignItems:'center', gap:4, border:'none', background:'transparent', cursor:'pointer', color:'#e2e8f0' }}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+              <button onClick={() => setShowMarketDrop(d=>!d)} style={{ display:'flex', alignItems:'center', gap:4, border:'none', background:'transparent', cursor:'pointer', color:'#f3f4f6' }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
                 <span style={{ fontSize:12, fontWeight:700 }}>{market.short}</span>
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
               </button>
               {showMarketDrop && <MktDropdown markets={MARKETS} market={market} setMarket={setMarket} setShowMarketDrop={setShowMarketDrop}/>}
             </div>
@@ -580,12 +577,12 @@ export default function Dashboard() {
             <span style={{ fontSize:10, fontWeight:600, color:priceChangePos?'#00c97b':'#ff4757' }}>{priceChangePos?'+':''}{priceChange}%</span>
             <span style={{ width:6, height:6, borderRadius:'50%', background:connected?'#00c97b':'#fbbf24', display:'inline-block', flexShrink:0 }}/>
             <div style={{ flex:1 }}/>
-            <span style={{ padding:'2px 7px', borderRadius:4, background:'#141828', color:'#8892a4', fontSize:10, fontWeight:600 }}>100%</span>
+            <span style={{ padding:'2px 7px', borderRadius:4, background:'#151a22', color:'#9ca3af', fontSize:10, fontWeight:600 }}>100%</span>
           </div>
           {/* canvas */}
           <div style={{ flex:1, position:'relative', overflow:'hidden', minHeight:0, width:'100%' }}>
             <div style={{ position:'absolute', left:6, bottom:8, display:'flex', flexDirection:'column', gap:3, zIndex:10 }}>
-              {['+','−'].map(s => <button key={s} style={{ width:22, height:22, borderRadius:5, border:'1px solid rgba(255,255,255,0.1)', background:'#141828', color:'#e2e8f0', fontSize:15, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>{s}</button>)}
+              {['+','−'].map(s => <button key={s} style={{ width:22, height:22, borderRadius:5, border:'1px solid rgba(255,255,255,0.1)', background:'#151a22', color:'#f3f4f6', fontSize:15, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>{s}</button>)}
             </div>
             <PriceChart ticks={ticks} mockTicks={mockTicks}/>
           </div>
@@ -595,22 +592,22 @@ export default function Dashboard() {
         {/* ══ MOBILE BOTTOM ══ */}
         <div className="m-bnav" style={{ flexDirection:'column' }}>
           {bottomTab==='trade' && (
-            <div className="ns" style={{ background:'#0f1220', overflowY:'auto', maxHeight:'46vh', borderTop:'1px solid rgba(255,255,255,0.07)' }}>
+            <div className="ns" style={{ background:'#0e1118', overflowY:'auto', maxHeight:'46vh', borderTop:'1px solid rgba(255,255,255,0.07)' }}>
               <TradePanel tradeType={tradeType} setTradeType={setTradeType} autoMode={autoMode} setAutoMode={setAutoMode} stake={stake} setStake={setStake} payout={payout} placeTrade={placeTrade}/>
             </div>
           )}
           {bottomTab==='positions' && (
-            <div className="ns" style={{ background:'#0f1220', overflowY:'auto', maxHeight:'46vh', borderTop:'1px solid rgba(255,255,255,0.07)', padding:10 }}>
+            <div className="ns" style={{ background:'#0e1118', overflowY:'auto', maxHeight:'46vh', borderTop:'1px solid rgba(255,255,255,0.07)', padding:10 }}>
               {openPos.length===0&&closedPos.length===0
                 ? <div style={{ textAlign:'center', color:'#515c72', fontSize:12, padding:'24px 0' }}>No positions yet.</div>
                 : [...openPos,...closedPos].map(p => (
-                    <div key={p.id} style={{ marginBottom:6, padding:10, borderRadius:8, background:'#141828', border:'1px solid rgba(255,255,255,0.06)' }}>
+                    <div key={p.id} style={{ marginBottom:6, padding:10, borderRadius:8, background:'#151a22', border:'1px solid rgba(255,255,255,0.06)' }}>
                       <div style={{ display:'flex', justifyContent:'space-between', marginBottom:3 }}>
                         <span style={{ fontSize:12, fontWeight:700, textTransform:'capitalize', color:p.status==='open'?'#d99332':p.status==='won'?'#00c97b':'#ff4757' }}>{p.type} {p.status!=='open'&&`— ${p.status}`}</span>
                         <span style={{ fontSize:10, color:'#515c72' }}>{p.time}</span>
                       </div>
                       {p.status==='open'
-                        ? <div style={{ fontSize:11, color:'#8892a4' }}>Stake ${p.stake} → ${p.payout} <span style={{ color:'#fbbf24' }}>Pending…</span></div>
+                        ? <div style={{ fontSize:11, color:'#9ca3af' }}>Stake ${p.stake} → ${p.payout} <span style={{ color:'#fbbf24' }}>Pending…</span></div>
                         : <div style={{ fontSize:13, fontWeight:700, color:p.profit>0?'#00c97b':'#ff4757' }}>{p.profit>0?'+':''}{p.profit?.toFixed(2)} USD</div>
                       }
                     </div>
@@ -618,21 +615,9 @@ export default function Dashboard() {
               }
             </div>
           )}
-          {bottomTab==='ai' && (
-            <div style={{ background:'#0f1220', maxHeight:'46vh', borderTop:'1px solid rgba(255,255,255,0.07)', padding:20, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10 }}>
-              <div style={{ width:46, height:46, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed,#d99332)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              </div>
-              <div style={{ textAlign:'center' }}>
-                <div style={{ fontSize:14, fontWeight:700, marginBottom:4 }}>AlphaFx AI</div>
-                <div style={{ fontSize:11, color:'#8892a4' }}>AI signals coming soon.</div>
-              </div>
-            </div>
-          )}
           {/* Bottom nav bar */}
-          <div style={{ display:'flex', background:'#0f1220', borderTop:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
+          <div style={{ display:'flex', background:'#0e1118', borderTop:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
             {[['trade','Trade',<svg key="t" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>],
-              ['ai','AI',<div key="ai" style={{ width:26, height:26, borderRadius:'50%', background:'linear-gradient(135deg,#7c3aed55,#d9933255)', display:'flex', alignItems:'center', justifyContent:'center' }}><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>],
               ['positions','Positions',<svg key="p" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>]
             ].map(([key,label,icon]) => (
               <button key={key} className={`bnav-btn ${bottomTab===key?'act':''}`} onClick={() => setBottomTab(key)}>{icon}{label}</button>
@@ -644,10 +629,10 @@ export default function Dashboard() {
         <div className="desk-shell" style={{ flex:1, overflow:'hidden', minHeight:0 }}>
 
           {/* LEFT: icon strip + positions sidebar */}
-          <div style={{ width:256, flexShrink:0, display:'flex', background:'#0f1220', borderRight:'1px solid rgba(255,255,255,0.07)', overflow:'hidden' }}>
+          <div style={{ width:256, flexShrink:0, display:'flex', background:'#0e1118', borderRight:'1px solid rgba(255,255,255,0.07)', overflow:'hidden' }}>
             {/* Icon strip */}
             <div style={{ width:38, flexShrink:0, display:'flex', flexDirection:'column', alignItems:'center', paddingTop:10, gap:5, borderRight:'1px solid rgba(255,255,255,0.07)', background:'#0b0d14' }}>
-              <div style={{ width:24, height:24, borderRadius:6, background:'#141828', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, color:'#8892a4', marginBottom:8 }}>1T</div>
+              <div style={{ width:24, height:24, borderRadius:6, background:'#151a22', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, color:'#9ca3af', marginBottom:8 }}>1T</div>
               {[
                 <svg key="a" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>,
                 <svg key="b" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="18" y="12" width="4" height="9"/></svg>,
@@ -666,8 +651,8 @@ export default function Dashboard() {
             {/* Toolbar */}
             <div style={{ display:'flex', alignItems:'center', gap:10, padding:'0 12px', height:48, background:'#0b0d14', borderBottom:'1px solid rgba(255,255,255,0.06)', flexShrink:0 }}>
               <div style={{ position:'relative', flexShrink:0 }} ref={marketDropRef}>
-                <button onClick={() => setShowMarketDrop(d=>!d)} style={{ display:'flex', alignItems:'center', gap:8, border:'none', background:'transparent', cursor:'pointer', color:'#e2e8f0' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+                <button onClick={() => setShowMarketDrop(d=>!d)} style={{ display:'flex', alignItems:'center', gap:8, border:'none', background:'transparent', cursor:'pointer', color:'#f3f4f6' }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
                   <div>
                     <div style={{ fontSize:14, fontWeight:700 }}>{market.label}</div>
                     <div style={{ fontSize:10, color:priceChangePos?'#00c97b':'#ff4757', display:'flex', alignItems:'center', gap:4 }}>
@@ -676,17 +661,17 @@ export default function Dashboard() {
                       {connected ? '↗' : ''}
                     </div>
                   </div>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#8892a4" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 {showMarketDrop && <MktDropdown markets={MARKETS} market={market} setMarket={setMarket} setShowMarketDrop={setShowMarketDrop}/>}
               </div>
               <div style={{ flex:1 }}/>
-              <span style={{ padding:'3px 9px', borderRadius:5, background:'#141828', color:'#8892a4', fontSize:11, fontWeight:600 }}>100%</span>
+              <span style={{ padding:'3px 9px', borderRadius:5, background:'#151a22', color:'#9ca3af', fontSize:11, fontWeight:600 }}>100%</span>
             </div>
             {/* Canvas */}
             <div style={{ flex:1, position:'relative', overflow:'hidden', minHeight:0 }}>
               <div style={{ position:'absolute', left:10, bottom:14, display:'flex', flexDirection:'column', gap:4, zIndex:10 }}>
-                {['+','−'].map(s => <button key={s} style={{ width:26, height:26, borderRadius:6, border:'1px solid rgba(255,255,255,0.1)', background:'#141828', color:'#e2e8f0', fontSize:16, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>{s}</button>)}
+                {['+','−'].map(s => <button key={s} style={{ width:26, height:26, borderRadius:6, border:'1px solid rgba(255,255,255,0.1)', background:'#151a22', color:'#f3f4f6', fontSize:16, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', lineHeight:1 }}>{s}</button>)}
               </div>
               <PriceChart ticks={ticks} mockTicks={mockTicks}/>
             </div>
@@ -694,7 +679,7 @@ export default function Dashboard() {
           </div>
 
           {/* RIGHT: trade panel */}
-          <div className="ns" style={{ width:268, flexShrink:0, overflowY:'auto', background:'#0f1220', borderLeft:'1px solid rgba(255,255,255,0.07)' }}>
+          <div className="ns" style={{ width:268, flexShrink:0, overflowY:'auto', background:'#0e1118', borderLeft:'1px solid rgba(255,255,255,0.07)' }}>
             <TradePanel tradeType={tradeType} setTradeType={setTradeType} autoMode={autoMode} setAutoMode={setAutoMode} stake={stake} setStake={setStake} payout={payout} placeTrade={placeTrade}/>
           </div>
 

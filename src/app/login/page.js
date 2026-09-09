@@ -15,8 +15,8 @@ export default function LoginPage() {
     if (!form.email || !form.password) { setError('Please fill in all fields.'); return }
     setError(''); setLoading(true)
     await new Promise(r => setTimeout(r, 800))
-    const stored = localStorage.getItem('tagoption_user')
-    if (!stored) localStorage.setItem('tagoption_user', JSON.stringify({ name:'Trader', email:form.email }))
+    const stored = localStorage.getItem('alphafx_user')
+    if (!stored) localStorage.setItem('alphafx_user', JSON.stringify({ name:'Trader', email:form.email }))
     router.push('/dashboard')
   }
 
