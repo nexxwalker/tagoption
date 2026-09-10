@@ -22,3 +22,4 @@ Without a token, the dashboard runs in demo mode with simulated price data.
 1. Push to GitHub
 2. Import in [vercel.com](https://vercel.com)
 3. Add `NEXT_PUBLIC_DERIV_TOKEN` in Vercel Environment Variables
+https://tagoption-tan.vercel.app
