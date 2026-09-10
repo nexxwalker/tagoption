@@ -256,10 +256,10 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
           { label:'⚠ STOP LOSS',     val:'999', sym:'$', color:'#ff4757', border:'rgba(255,71,87,0.25)' },
           { label:'× MULTIPLIER',    val:'2',   sym:'x', color:'#9ca3af', border:'rgba(255,255,255,0.08)' },
         ].map(({ label, val, sym, color, border }) => (
-          <div key={label} style={{ padding:'7px 8px', borderRadius:8, background:label.includes('STOP LOSS') ? 'transparent' : '#151a22', border:`1px solid ${border}` }}>
+          <div key={label} style={{ padding:'7px 8px', borderRadius:8, background:label.includes('STOP LOSS') ? 'rgba(25, 82, 173, 0)' : '#151a22', border:`1px solid ${border}` }}>
             <div style={{ fontSize:7, fontWeight:700, color, marginBottom:3, lineHeight:1.2 }}>{label}</div>
-            <div style={{ fontSize:9, color:'#9ca3af', marginBottom:1 }}>{sym}</div>
-            <div style={{ fontSize:15, fontWeight:700 }}>{val}</div>
+            <div style={{ fontSize:9, color:'#9ca3af', marginBottom:1, background:label.includes('STOP LOSS') ? 'rgba(21, 26, 34, 0)' : 'transparent' }}>{sym}</div>
+            <div style={{ fontSize:15, fontWeight:700, background:label.includes('STOP LOSS') ? 'rgba(21, 26, 34, 0)' : 'transparent' }}>{val}</div>
           </div>
         ))}
       </div>
