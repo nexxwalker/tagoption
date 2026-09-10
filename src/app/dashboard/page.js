@@ -162,7 +162,7 @@ function DigitRow({ ticks, mockTicks, size }) {
   )
 }
 
-/* ─����� Market Dropdown ── */
+/* ─������� Market Dropdown ── */
 function MktDropdown({ markets, market, setMarket, setShowMarketDrop }) {
   return (
     <div style={{ position:'absolute', top:'calc(100% + 4px)', left:0, minWidth:220, background:'#151a22', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, boxShadow:'0 8px 32px rgba(0,0,0,0.8)', zIndex:600, maxHeight:260, overflowY:'auto' }}>
@@ -350,6 +350,79 @@ function PositionsList({ openPos, closedPos, tab, setTab }) {
   )
 }
 
+function TraderHub({ activeTab, setActiveTab, onClose }) {
+  const [amount, setAmount] = useState('10')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [transactions, setTransactions] = useState([])
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const authHeaders = () => {
+    const token = localStorage.getItem('alphafx_access_token')
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  }
+
+  useEffect(() => {
+    if (activeTab !== 'history') return
+    fetch('/api/payments', { headers: authHeaders() })
+      .then(res => res.json())
+      .then(data => setTransactions(data.transactions || []))
+      .catch(() => setMessage('Transaction history is temporarily unavailable.'))
+      .finally(() => setLoading(false))
+  }, [activeTab])
+
+  const submitPayment = async type => {
+    setMessage('')
+    const minimum = type === 'deposit' ? 10 : 5
+    if (Number(amount) < minimum) {
+      setMessage(`Minimum ${type} is $${minimum}.`)
+      return
+    }
+    setLoading(true)
+    try {
+      const response = await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ type, amount, phoneNumber }),
+      })
+      const data = await response.json()
+      setMessage(data.message || data.error || 'Payment request submitted.')
+      if (response.ok) setActiveTab('history')
+    } catch {
+      setMessage('Payment request could not be completed.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const tabs = [['deposit','Deposit'],['withdrawal','Withdraw'],['history','History'],['chat','Chat']]
+  return (
+    <div role="dialog" aria-modal="true" aria-label="Trader Hub" className="hub-panel">
+      <div className="hub-header">
+        <div><div className="hub-kicker">AlphaFx platform</div><h2>Trader&apos;s Hub</h2></div>
+        <button className="hub-close" onClick={onClose} aria-label="Close Trader Hub">×</button>
+      </div>
+      <div className="hub-tabs">
+        {tabs.map(([value, label]) => <button key={value} className={activeTab === value ? 'hub-tab active' : 'hub-tab'} onClick={() => { setActiveTab(value); setMessage('') }}>{label}</button>)}
+      </div>
+      <div className="hub-content">
+        {(activeTab === 'deposit' || activeTab === 'withdrawal') && (
+          <div className="hub-form">
+            <div className="hub-form-title">{activeTab === 'deposit' ? 'Fund your trading account' : 'Withdraw trading funds'}</div>
+            <div className="hub-note">{activeTab === 'deposit' ? 'Minimum deposit $10' : 'Minimum withdrawal $5'} · M-Pesa secured by Daraja</div>
+            <label>Amount (USD)<input type="number" min={activeTab === 'deposit' ? 10 : 5} value={amount} onChange={e => setAmount(e.target.value)} /></label>
+            <label>M-Pesa phone number<input type="tel" placeholder="+254712345678" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} /></label>
+            <button className="hub-primary" disabled={loading} onClick={() => submitPayment(activeTab)}>{loading ? 'Submitting…' : activeTab === 'deposit' ? 'Request deposit' : 'Request withdrawal'}</button>
+            {message && <div className="hub-message">{message}</div>}
+          </div>
+        )}
+        {activeTab === 'history' && <div className="hub-history"><div className="hub-form-title">Transaction ledger</div>{loading ? <div className="hub-empty">Loading history…</div> : transactions.length ? transactions.map(item => <div className="hub-row" key={item.id}><div><strong>{item.type}</strong><span>{new Date(item.created_at).toLocaleString()}</span></div><div><strong>${Number(item.amount).toFixed(2)}</strong><span className={`hub-status ${item.status}`}>{item.status}</span></div></div>) : <div className="hub-empty">No transactions recorded yet.</div>}{message && <div className="hub-message">{message}</div>}</div>}
+        {activeTab === 'chat' && <div className="hub-empty hub-chat"><div className="hub-form-title">Trader support</div><p>Support chat is available from the AlphaFx operations desk.</p><button className="hub-primary" onClick={() => setMessage('Support chat will be available shortly.')}>Start chat</button>{message && <div className="hub-message">{message}</div>}</div>}
+      </div>
+    </div>
+  )
+}
+
 /* ── Main ── */
 export default function Dashboard() {
   const router = useRouter()
@@ -364,6 +437,8 @@ export default function Dashboard() {
   const [balance, setBalance] = useState(0)
   const [bottomTab, setBottomTab] = useState('trade')
   const [desktopPosTab, setDesktopPosTab] = useState('open')
+  const [showTraderHub, setShowTraderHub] = useState(false)
+  const [hubTab, setHubTab] = useState('deposit')
   const [showBanner, setShowBanner] = useState(true)
   const [muted, setMuted] = useState(false)
   const mockRef = useRef([])
@@ -465,7 +540,16 @@ export default function Dashboard() {
         .navlink:hover{color:#f3f4f6;background:rgba(255,255,255,0.05)}
         .icobtn{width:30px;height:30px;border-radius:7px;border:none;cursor:pointer;background:transparent;color:#9ca3af;display:flex;align-items:center;justify-content:center}
         .icobtn:hover{background:rgba(255,255,255,0.06);color:#f3f4f6}
+        .hub-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.62);display:flex;justify-content:flex-end}
+        .hub-panel{width:min(430px,100%);height:100%;background:#0e1118;border-left:1px solid rgba(255,255,255,.1);box-shadow:-18px 0 50px rgba(0,0,0,.35);display:flex;flex-direction:column;color:#f3f4f6}
+        .hub-header{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .hub-kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#d99332;font-weight:700;margin-bottom:5px}.hub-header h2{font-size:21px;letter-spacing:-.03em}
+        .hub-close{border:0;background:transparent;color:#9ca3af;font-size:25px;line-height:1;cursor:pointer;padding:0 2px}.hub-close:hover{color:#f3f4f6}
+        .hub-tabs{display:flex;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.08)}.hub-tab{padding:11px 10px;border:0;border-bottom:2px solid transparent;background:transparent;color:#9ca3af;font-size:12px;font-weight:600;cursor:pointer}.hub-tab.active{color:#d99332;border-bottom-color:#d99332}
+        .hub-content{padding:18px 20px;overflow:auto}.hub-form-title{font-size:15px;font-weight:700;margin-bottom:5px}.hub-note{font-size:11px;color:#9ca3af;margin-bottom:18px}.hub-form label{display:flex;flex-direction:column;gap:6px;color:#9ca3af;font-size:11px;margin-bottom:12px}.hub-form input{height:38px;border:1px solid rgba(255,255,255,.12);border-radius:6px;background:#151a22;color:#f3f4f6;padding:0 10px;font:inherit;font-size:13px;outline:none}.hub-form input:focus{border-color:#d99332}.hub-primary{width:100%;height:38px;border:0;border-radius:6px;background:#d99332;color:#fff;font-size:12px;font-weight:700;cursor:pointer}.hub-primary:disabled{opacity:.55;cursor:wait}.hub-message{margin-top:12px;padding:9px 10px;border-radius:5px;background:rgba(217,147,50,.1);color:#e6ad4c;font-size:11px}.hub-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07)}.hub-row div:last-child{text-align:right}.hub-row strong{display:block;font-size:12px;text-transform:capitalize}.hub-row span{display:block;color:#9ca3af;font-size:10px;margin-top:3px}.hub-status{color:#d99332!important}.hub-status.completed{color:#2fb879!important}.hub-status.failed{color:#d95c5c!important}.hub-empty{padding:28px 0;color:#9ca3af;font-size:12px;text-align:center}.hub-chat{padding-top:40px}
       `}</style>
+
+      {showTraderHub && <div className="hub-overlay" onMouseDown={e => e.target === e.currentTarget && setShowTraderHub(false)}><TraderHub activeTab={hubTab} setActiveTab={setHubTab} onClose={() => setShowTraderHub(false)}/></div>}
 
       <div style={{ display:'flex', flexDirection:'column', height:'100dvh', background:'#0b0d14', color:'#f3f4f6', fontFamily:"'DM Sans',sans-serif", overflow:'hidden' }}>
 
@@ -500,7 +584,7 @@ export default function Dashboard() {
             [<svg key="hi" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,"History"],
             [<svg key="c" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>,"Chat"],
           ].map(([icon, label]) => (
-            <button key={label} className="navlink">{icon}{label}</button>
+            <button key={label} className="navlink" onClick={() => label === "Trader's Hub" && setShowTraderHub(true)}>{icon}{label}</button>
           ))}
           {/* TO trader badge */}
           <button style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 10px', borderRadius:8, background:'#d99332', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer', border:'none', flexShrink:0, marginLeft:4 }}>
