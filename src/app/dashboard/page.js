@@ -29,12 +29,20 @@ function useDerivWS(symbol) {
     wsRef.current = ws
     ws.onopen  = () => { setConnected(true); ws.send(JSON.stringify({ ticks: symbol, subscribe: 1 })) }
     ws.onmessage = e => {
-      const d = JSON.parse(e.data)
-      if (d.msg_type === 'tick') {
-        const p = d.tick.quote
-        setPrice(p)
-        setTicks(prev => [...prev, { price: p, time: d.tick.epoch * 1000 }].slice(-300))
+      let d
+      try {
+        d = JSON.parse(e.data)
+      } catch {
+        return
       }
+
+      if (d.msg_type !== 'tick' || !d.tick) return
+      const quote = Number(d.tick.quote)
+      const epoch = Number(d.tick.epoch)
+      if (!Number.isFinite(quote) || !Number.isFinite(epoch)) return
+
+      setPrice(quote)
+      setTicks(prev => [...prev, { price: quote, time: epoch * 1000 }].slice(-300))
     }
     ws.onclose = () => setConnected(false)
     ws.onerror = () => setConnected(false)
