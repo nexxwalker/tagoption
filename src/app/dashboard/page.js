@@ -25,7 +25,6 @@ function useDerivWS(symbol) {
   const [connected, setConnected] = useState(false)
   useEffect(() => {
     if (wsRef.current) { wsRef.current.close(); wsRef.current = null }
-    setTicks([]); setPrice(null); setConnected(false)
     const ws = new WebSocket(DERIV_WS)
     wsRef.current = ws
     ws.onopen  = () => { setConnected(true); ws.send(JSON.stringify({ ticks: symbol, subscribe: 1 })) }
@@ -162,7 +161,7 @@ function DigitRow({ ticks, mockTicks, size }) {
   )
 }
 
-/* ─������� Market Dropdown ── */
+/* ─��������� Market Dropdown ── */
 function MktDropdown({ markets, market, setMarket, setShowMarketDrop }) {
   return (
     <div style={{ position:'absolute', top:'calc(100% + 4px)', left:0, minWidth:220, background:'#151a22', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, boxShadow:'0 8px 32px rgba(0,0,0,0.8)', zIndex:600, maxHeight:260, overflowY:'auto' }}>
@@ -423,6 +422,12 @@ function TraderHub({ activeTab, setActiveTab, onClose }) {
   )
 }
 
+function SoundIcon({ muted }) {
+  return muted
+    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+}
+
 /* ── Main ── */
 export default function Dashboard() {
   const router = useRouter()
@@ -450,7 +455,9 @@ export default function Dashboard() {
     let base = 9500
     const arr = []
     for (let i = 0; i < 150; i++) { base += (Math.random()-0.48)*2.5; arr.push({ price:base, time:Date.now()-(150-i)*1000 }) }
-    mockRef.current = arr; setMockTicks([...arr])
+    mockRef.current = arr
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMockTicks([...arr])
     const t = setInterval(() => {
       base += (Math.random()-0.48)*2.5
       mockRef.current = [...mockRef.current, { price:base, time:Date.now() }].slice(-300)
@@ -464,6 +471,7 @@ export default function Dashboard() {
   useEffect(() => {
     const s = localStorage.getItem('alphafx_user')
     if (!s) { router.push('/login'); return }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUser(JSON.parse(s))
   }, [router])
 
@@ -506,9 +514,6 @@ export default function Dashboard() {
 
   if (!user) return <div style={{ background:'#0b0d14', minHeight:'100vh' }}/>
 
-  const SoundIcon = () => muted
-    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-    : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
 
   return (
     <>
@@ -584,7 +589,7 @@ export default function Dashboard() {
             [<svg key="hi" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,"History"],
             [<svg key="c" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>,"Chat"],
           ].map(([icon, label]) => (
-            <button key={label} className="navlink" onClick={() => label === "Trader's Hub" && setShowTraderHub(true)}>{icon}{label}</button>
+            <button key={label} className="navlink" onClick={() => { const tab = { "Trader's Hub": 'deposit', Deposit: 'deposit', Withdraw: 'withdrawal', History: 'history', Chat: 'chat' }[label]; setHubTab(tab); setShowTraderHub(true) }}>{icon}{label}</button>
           ))}
           {/* TO trader badge */}
           <button style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 10px', borderRadius:8, background:'#d99332', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer', border:'none', flexShrink:0, marginLeft:4 }}>
@@ -594,7 +599,7 @@ export default function Dashboard() {
           </button>
           <div style={{ flex:1 }}/>
           {/* Right controls */}
-          <button className="icobtn" onClick={() => setMuted(m=>!m)}><SoundIcon/></button>
+          <button className="icobtn" onClick={() => setMuted(m=>!m)}><SoundIcon muted={muted}/></button>
           <button className="icobtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
           {/* Balance */}
           <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px', borderRadius:8, border:'1px solid rgba(255,255,255,0.08)', color:'#9ca3af', fontSize:12, margin:'0 6px', cursor:'pointer' }}>
@@ -602,7 +607,7 @@ export default function Dashboard() {
             <span style={{ fontWeight:700, color:'#f3f4f6', fontSize:13 }}>$ {balance.toFixed(2)}</span>
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
-          <button style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', background:'#d99332', color:'#fff', fontSize:13, fontWeight:700 }}>Deposit</button>
+          <button onClick={() => { setHubTab('deposit'); setShowTraderHub(true) }} style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', background:'#d99332', color:'#fff', fontSize:13, fontWeight:700 }}>Deposit</button>
           <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:'0 6px', position:'relative' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
             <span style={{ position:'absolute', top:-3, right:2, width:14, height:14, borderRadius:'50%', background:'#ff4757', color:'#fff', fontSize:8, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>2</span>
@@ -626,8 +631,8 @@ export default function Dashboard() {
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <div style={{ flex:1 }}/>
-          <button onClick={() => setMuted(m=>!m)} className="icobtn"><SoundIcon/></button>
-          <button style={{ padding:'5px 12px', borderRadius:7, border:'none', background:'#d99332', color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer' }}>Deposit</button>
+          <button onClick={() => setMuted(m=>!m)} className="icobtn"><SoundIcon muted={muted}/></button>
+          <button onClick={() => { setHubTab('deposit'); setShowTraderHub(true) }} style={{ padding:'5px 12px', borderRadius:7, border:'none', background:'#d99332', color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer' }}>Deposit</button>
           <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:3 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
           </button>

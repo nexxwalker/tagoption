@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { getSupabaseClient } from '@/lib/supabase'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -14,9 +15,10 @@ export default function LoginPage() {
   const handleSubmit = async () => {
     if (!form.email || !form.password) { setError('Please fill in all fields.'); return }
     setError(''); setLoading(true)
-    await new Promise(r => setTimeout(r, 800))
-    const stored = localStorage.getItem('alphafx_user')
-    if (!stored) localStorage.setItem('alphafx_user', JSON.stringify({ name:'Trader', email:form.email }))
+    const { data, error: authError } = await getSupabaseClient().auth.signInWithPassword({ email: form.email, password: form.password })
+    if (authError) { setError(authError.message.includes('Email not confirmed') ? 'Confirm your email before signing in.' : 'Invalid email or password.'); setLoading(false); return }
+    localStorage.setItem('alphafx_user', JSON.stringify({ name: data.user.user_metadata?.name || 'Trader', email: data.user.email }))
+    localStorage.setItem('alphafx_access_token', data.session.access_token)
     router.push('/dashboard')
   }
 

@@ -55,8 +55,7 @@ export async function POST(request) {
     }).select('id, type, amount, currency, status, created_at').single()
     if (insertError) throw insertError
 
-    const callbackUrl = process.env.DARAJA_CALLBACK_URL
-    if (!callbackUrl) throw new Error('Daraja callback URL is not configured')
+    const callbackUrl = process.env.DARAJA_CALLBACK_URL || `${new URL(request.url).origin}/api/payments/callback`
 
     const accessToken = await darajaToken()
     const timestamp = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14)
@@ -74,7 +73,7 @@ export async function POST(request) {
 
     await supabase.from('transactions').update({ provider_reference: result.CheckoutRequestID || result.OriginatorConversationID || result.ConversationID, status: 'pending' }).eq('id', transaction.id)
     return NextResponse.json({ transaction, message: type === 'deposit' ? 'Payment prompt sent to your phone.' : 'Withdrawal request submitted.' })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Payment request could not be completed.' }, { status: 500 })
   }
 }
