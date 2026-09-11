@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getSupabaseClient } from '@/lib/supabase'
 
 const DERIV_WS = 'wss://ws.derivws.com/websockets/v3?app_id=1089'
 const MARKETS = [
@@ -25,17 +26,24 @@ function useDerivWS(symbol) {
   const [connected, setConnected] = useState(false)
   useEffect(() => {
     if (wsRef.current) { wsRef.current.close(); wsRef.current = null }
-    setTicks([]); setPrice(null); setConnected(false)
     const ws = new WebSocket(DERIV_WS)
     wsRef.current = ws
     ws.onopen  = () => { setConnected(true); ws.send(JSON.stringify({ ticks: symbol, subscribe: 1 })) }
     ws.onmessage = e => {
-      const d = JSON.parse(e.data)
-      if (d.msg_type === 'tick') {
-        const p = d.tick.quote
-        setPrice(p)
-        setTicks(prev => [...prev, { price: p, time: d.tick.epoch * 1000 }].slice(-300))
+      let d
+      try {
+        d = JSON.parse(e.data)
+      } catch {
+        return
       }
+
+      if (d.msg_type !== 'tick' || !d.tick) return
+      const quote = Number(d.tick.quote)
+      const epoch = Number(d.tick.epoch)
+      if (!Number.isFinite(quote) || !Number.isFinite(epoch)) return
+
+      setPrice(quote)
+      setTicks(prev => [...prev, { price: quote, time: epoch * 1000 }].slice(-300))
     }
     ws.onclose = () => setConnected(false)
     ws.onerror = () => setConnected(false)
@@ -162,7 +170,7 @@ function DigitRow({ ticks, mockTicks, size }) {
   )
 }
 
-/* ─����� Market Dropdown ── */
+/* ─��������� Market Dropdown ── */
 function MktDropdown({ markets, market, setMarket, setShowMarketDrop }) {
   return (
     <div style={{ position:'absolute', top:'calc(100% + 4px)', left:0, minWidth:220, background:'#151a22', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, boxShadow:'0 8px 32px rgba(0,0,0,0.8)', zIndex:600, maxHeight:260, overflowY:'auto' }}>
@@ -249,10 +257,10 @@ function TradePanel({ tradeType, setTradeType, autoMode, setAutoMode, stake, set
           { label:'⚠ STOP LOSS',     val:'999', sym:'$', color:'#ff4757', border:'rgba(255,71,87,0.25)' },
           { label:'× MULTIPLIER',    val:'2',   sym:'x', color:'#9ca3af', border:'rgba(255,255,255,0.08)' },
         ].map(({ label, val, sym, color, border }) => (
-          <div key={label} style={{ padding:'7px 8px', borderRadius:8, background:'#151a22', border:`1px solid ${border}` }}>
+          <div key={label} style={{ padding:'7px 8px', borderRadius:8, background:label.includes('STOP LOSS') ? 'rgba(25, 82, 173, 0)' : '#151a22', border:`1px solid ${border}` }}>
             <div style={{ fontSize:7, fontWeight:700, color, marginBottom:3, lineHeight:1.2 }}>{label}</div>
-            <div style={{ fontSize:9, color:'#9ca3af', marginBottom:1 }}>{sym}</div>
-            <div style={{ fontSize:15, fontWeight:700 }}>{val}</div>
+            <div style={{ fontSize:9, color:'#9ca3af', marginBottom:1, background:label.includes('STOP LOSS') ? 'rgba(21, 26, 34, 0)' : 'transparent' }}>{sym}</div>
+            <div style={{ fontSize:15, fontWeight:700, background:label.includes('STOP LOSS') ? 'rgba(21, 26, 34, 0)' : 'transparent' }}>{val}</div>
           </div>
         ))}
       </div>
@@ -350,6 +358,85 @@ function PositionsList({ openPos, closedPos, tab, setTab }) {
   )
 }
 
+function TraderHub({ activeTab, setActiveTab, onClose }) {
+  const [amount, setAmount] = useState('10')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [transactions, setTransactions] = useState([])
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const authHeaders = () => {
+    const token = localStorage.getItem('alphafx_access_token')
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  }
+
+  useEffect(() => {
+    if (activeTab !== 'history') return
+    fetch('/api/payments', { headers: authHeaders() })
+      .then(res => res.json())
+      .then(data => setTransactions(data.transactions || []))
+      .catch(() => setMessage('Transaction history is temporarily unavailable.'))
+      .finally(() => setLoading(false))
+  }, [activeTab])
+
+  const submitPayment = async type => {
+    setMessage('')
+    const minimum = type === 'deposit' ? 10 : 5
+    if (Number(amount) < minimum) {
+      setMessage(`Minimum ${type} is $${minimum}.`)
+      return
+    }
+    setLoading(true)
+    try {
+      const response = await fetch('/api/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ type, amount, phoneNumber }),
+      })
+      const data = await response.json()
+      setMessage(data.message || data.error || 'Payment request submitted.')
+      if (response.ok) setActiveTab('history')
+    } catch {
+      setMessage('Payment request could not be completed.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const tabs = [['deposit','Deposit'],['withdrawal','Withdraw'],['history','History'],['chat','Chat']]
+  return (
+    <div role="dialog" aria-modal="true" aria-label="Trader Hub" className="hub-panel">
+      <div className="hub-header">
+        <div><div className="hub-kicker">AlphaFx platform</div><h2>Trader&apos;s Hub</h2></div>
+        <button className="hub-close" onClick={onClose} aria-label="Close Trader Hub">×</button>
+      </div>
+      <div className="hub-tabs">
+        {tabs.map(([value, label]) => <button key={value} className={activeTab === value ? 'hub-tab active' : 'hub-tab'} onClick={() => { setActiveTab(value); setMessage('') }}>{label}</button>)}
+      </div>
+      <div className="hub-content">
+        {(activeTab === 'deposit' || activeTab === 'withdrawal') && (
+          <div className="hub-form">
+            <div className="hub-form-title">{activeTab === 'deposit' ? 'Fund your trading account' : 'Withdraw trading funds'}</div>
+            <div className="hub-note">{activeTab === 'deposit' ? 'Minimum deposit $10' : 'Minimum withdrawal $5'} · M-Pesa secured by Daraja</div>
+            <label>Amount (USD)<input type="number" min={activeTab === 'deposit' ? 10 : 5} value={amount} onChange={e => setAmount(e.target.value)} /></label>
+            <label>M-Pesa phone number<input type="tel" placeholder="+254712345678" value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} /></label>
+            <button className="hub-primary" disabled={loading} onClick={() => submitPayment(activeTab)}>{loading ? 'Submitting…' : activeTab === 'deposit' ? 'Request deposit' : 'Request withdrawal'}</button>
+            {message && <div className="hub-message">{message}</div>}
+          </div>
+        )}
+        {activeTab === 'history' && <div className="hub-history"><div className="hub-form-title">Transaction ledger</div>{loading ? <div className="hub-empty">Loading history…</div> : transactions.length ? transactions.map(item => <div className="hub-row" key={item.id}><div><strong>{item.type}</strong><span>{new Date(item.created_at).toLocaleString()}</span></div><div><strong>${Number(item.amount).toFixed(2)}</strong><span className={`hub-status ${item.status}`}>{item.status}</span></div></div>) : <div className="hub-empty">No transactions recorded yet.</div>}{message && <div className="hub-message">{message}</div>}</div>}
+        {activeTab === 'chat' && <div className="hub-empty hub-chat"><div className="hub-form-title">Trader support</div><p>Support chat is available from the AlphaFx operations desk.</p><button className="hub-primary" onClick={() => setMessage('Support chat will be available shortly.')}>Start chat</button>{message && <div className="hub-message">{message}</div>}</div>}
+      </div>
+    </div>
+  )
+}
+
+function SoundIcon({ muted }) {
+  return muted
+    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+    : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+}
+
 /* ── Main ── */
 export default function Dashboard() {
   const router = useRouter()
@@ -364,8 +451,20 @@ export default function Dashboard() {
   const [balance, setBalance] = useState(0)
   const [bottomTab, setBottomTab] = useState('trade')
   const [desktopPosTab, setDesktopPosTab] = useState('open')
+  const [showTraderHub, setShowTraderHub] = useState(false)
+  const [hubTab, setHubTab] = useState('deposit')
   const [showBanner, setShowBanner] = useState(true)
   const [muted, setMuted] = useState(false)
+  const [accountMode, setAccountMode] = useState('real')
+  const [demoBalance, setDemoBalance] = useState(10000)
+  const [showAccountMenu, setShowAccountMenu] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
+  const [profileForm, setProfileForm] = useState({ username:'', phone:'' })
+  const [profileMessage, setProfileMessage] = useState('')
+  const [installPrompt, setInstallPrompt] = useState(null)
   const mockRef = useRef([])
   const [mockTicks, setMockTicks] = useState([])
   const marketDropRef = useRef(null)
@@ -375,7 +474,9 @@ export default function Dashboard() {
     let base = 9500
     const arr = []
     for (let i = 0; i < 150; i++) { base += (Math.random()-0.48)*2.5; arr.push({ price:base, time:Date.now()-(150-i)*1000 }) }
-    mockRef.current = arr; setMockTicks([...arr])
+    mockRef.current = arr
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMockTicks([...arr])
     const t = setInterval(() => {
       base += (Math.random()-0.48)*2.5
       mockRef.current = [...mockRef.current, { price:base, time:Date.now() }].slice(-300)
@@ -389,16 +490,51 @@ export default function Dashboard() {
   useEffect(() => {
     const s = localStorage.getItem('alphafx_user')
     if (!s) { router.push('/login'); return }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUser(JSON.parse(s))
   }, [router])
 
   useEffect(() => {
+    const storedMode = localStorage.getItem('alphafx_account_mode') || 'real'
+    const storedMuted = localStorage.getItem('alphafx_muted') === 'true'
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAccountMode(storedMode)
+    setMuted(storedMuted)
     const h = e => {
       if (marketDropRef.current && !marketDropRef.current.contains(e.target)) setShowMarketDrop(false)
     }
+    const installHandler = e => { e.preventDefault(); setInstallPrompt(e) }
     document.addEventListener('mousedown', h)
-    return () => document.removeEventListener('mousedown', h)
+    window.addEventListener('beforeinstallprompt', installHandler)
+    return () => { document.removeEventListener('mousedown', h); window.removeEventListener('beforeinstallprompt', installHandler) }
   }, [])
+
+  useEffect(() => {
+    if (!user) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProfileForm({ username: user.username || user.name || 'Trader', phone: user.phone || '' })
+  }, [user])
+
+  const activeBalance = accountMode === 'demo' ? demoBalance : balance
+  const switchAccount = mode => {
+    setAccountMode(mode); localStorage.setItem('alphafx_account_mode', mode); setShowAccountMenu(false)
+  }
+  const toggleMute = () => {
+    setMuted(value => { localStorage.setItem('alphafx_muted', String(!value)); return !value })
+  }
+  const saveProfile = async event => {
+    event.preventDefault(); setProfileMessage('Saving…')
+    const client = getSupabaseClient()
+    const { data, error } = await client.auth.updateUser({ data: { username: profileForm.username.trim(), phone: profileForm.phone.trim(), name: profileForm.username.trim() } })
+    if (error) { setProfileMessage(error.message); return }
+    const nextUser = { ...user, name: profileForm.username.trim() || 'Trader', username: profileForm.username.trim(), phone: profileForm.phone.trim(), email: data.user?.email || user.email }
+    localStorage.setItem('alphafx_user', JSON.stringify(nextUser)); setUser(nextUser); setProfileMessage('Profile saved')
+  }
+  const downloadApp = async () => {
+    if (installPrompt) { installPrompt.prompt(); await installPrompt.userChoice; setInstallPrompt(null); return }
+    window.open('/manifest.webmanifest', '_blank', 'noopener,noreferrer')
+  }
+  const logout = async () => { await getSupabaseClient().auth.signOut(); localStorage.removeItem('alphafx_user'); localStorage.removeItem('alphafx_access_token'); router.push('/login') }
 
   const displayPrice = price ?? mockTicks.at(-1)?.price ?? 9500
   const payout = (stake * 1.9522).toFixed(2)
@@ -423,17 +559,23 @@ export default function Dashboard() {
         if (type==='over')  win = ld>4
         if (type==='under') win = ld<5
         const profit = win ? +(t.payout - t.stake).toFixed(2) : -t.stake
-        setBalance(b => +(b+profit).toFixed(2))
-        return { ...t, status:win?'won':'lost', profit }
+        if (accountMode === 'demo') setDemoBalance(b => +(b + profit).toFixed(2))
+        else setBalance(b => +(b + profit).toFixed(2))
+        return { ...t, accountMode, status:win?'won':'lost', profit }
       }))
     }, 5000)
   }
 
   if (!user) return <div style={{ background:'#0b0d14', minHeight:'100vh' }}/>
 
-  const SoundIcon = () => muted
-    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-    : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/></svg>
+  const controlMenu = (
+    <>
+      {showAccountMenu && <div className="control-pop account-pop"><div className="pop-title">Trading account</div><button onClick={() => switchAccount('real')} className={accountMode === 'real' ? 'pop-option active' : 'pop-option'}><span className="account-dot real">R</span><span><strong>Real account</strong><small>${balance.toFixed(2)} available</small></span></button><button onClick={() => switchAccount('demo')} className={accountMode === 'demo' ? 'pop-option active' : 'pop-option'}><span className="account-dot demo">D</span><span><strong>Demo account</strong><small>${demoBalance.toFixed(2)} practice balance</small></span></button></div>}
+      {showNotifications && <div className="control-pop notification-pop"><div className="pop-title">Notifications</div><p>No new account notifications.</p></div>}
+      {showUserMenu && <div className="control-pop user-pop"><button className="pop-option" onClick={() => { setShowProfile(true); setShowUserMenu(false) }}>Profile settings</button><button className="pop-option" onClick={downloadApp}>Download app</button><button className="pop-option danger" onClick={logout}>Log out</button></div>}
+      {showProfile && <div className="profile-overlay" onMouseDown={e => e.target === e.currentTarget && setShowProfile(false)}><form className="profile-card" onSubmit={saveProfile}><div className="profile-head"><div><div className="hub-kicker">Account profile</div><h2>Personal details</h2></div><button type="button" className="hub-close" onClick={() => setShowProfile(false)}>×</button></div><label>Username<input value={profileForm.username} onChange={e => setProfileForm({ ...profileForm, username:e.target.value })} required /></label><label>Phone number<input type="tel" value={profileForm.phone} onChange={e => setProfileForm({ ...profileForm, phone:e.target.value })} placeholder="+254712345678" /></label><div className="profile-email">{user.email}</div><button className="hub-primary" type="submit">Save profile</button>{profileMessage && <div className="hub-message">{profileMessage}</div>}</form></div>}
+    </>
+  )
 
   return (
     <>
@@ -463,9 +605,19 @@ export default function Dashboard() {
         .tab-btn.act{color:#d99332;border-bottom-color:#d99332}
         .navlink{display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;color:#9ca3af;font-size:12px;font-weight:500;background:transparent;border:none;cursor:pointer;white-space:nowrap}
         .navlink:hover{color:#f3f4f6;background:rgba(255,255,255,0.05)}
-        .icobtn{width:30px;height:30px;border-radius:7px;border:none;cursor:pointer;background:transparent;color:#9ca3af;display:flex;align-items:center;justify-content:center}
-        .icobtn:hover{background:rgba(255,255,255,0.06);color:#f3f4f6}
+        .icobtn{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,0.09);cursor:pointer;background:#151a22;color:#9ca3af;display:flex;align-items:center;justify-content:center}.icobtn:hover{background:#202733;color:#f3f4f6;border-color:rgba(217,147,50,.5)}
+        .control-pop{position:fixed;top:54px;right:14px;z-index:100;background:#11161e;border:1px solid rgba(255,255,255,.12);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);padding:8px;min-width:220px;color:#f3f4f6}.account-pop{right:120px}.notification-pop{right:44px}.user-pop{right:12px}.pop-title{padding:6px 8px 9px;color:#d99332;text-transform:uppercase;letter-spacing:1px;font-size:9px;font-weight:700}.control-pop p{padding:10px 8px;color:#9ca3af;font-size:11px}.pop-option{display:flex;align-items:center;gap:9px;width:100%;padding:9px 8px;border:0;border-radius:7px;background:transparent;color:#f3f4f6;text-align:left;cursor:pointer;font-size:11px}.pop-option:hover,.pop-option.active{background:rgba(217,147,50,.12)}.pop-option strong,.pop-option small{display:block}.pop-option small{margin-top:2px;color:#9ca3af;font-size:10px}.pop-option.danger{color:#d95c5c}.account-dot{display:flex;width:25px;height:25px;align-items:center;justify-content:center;border-radius:50%;font-size:10px;font-weight:800}.account-dot.real{background:#d95c5c}.account-dot.demo{background:#2fb879}.profile-overlay{position:fixed;inset:0;z-index:110;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:18px}.profile-card{width:min(380px,100%);background:#11161e;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:18px;box-shadow:0 16px 50px rgba(0,0,0,.45)}.profile-head{display:flex;justify-content:space-between;margin-bottom:18px}.profile-card label{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;color:#9ca3af;font-size:11px}.profile-card input{height:38px;border:1px solid rgba(255,255,255,.12);border-radius:6px;background:#151a22;color:#f3f4f6;padding:0 10px;font:inherit}.profile-email{font-size:11px;color:#515c72;margin:4px 0 14px}
+        .hub-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.62);display:flex;justify-content:flex-end}
+        .hub-panel{width:min(430px,100%);height:100%;background:#0e1118;border-left:1px solid rgba(255,255,255,.1);box-shadow:-18px 0 50px rgba(0,0,0,.35);display:flex;flex-direction:column;color:#f3f4f6}
+        .hub-header{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .hub-kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#d99332;font-weight:700;margin-bottom:5px}.hub-header h2{font-size:21px;letter-spacing:-.03em}
+        .hub-close{border:0;background:transparent;color:#9ca3af;font-size:25px;line-height:1;cursor:pointer;padding:0 2px}.hub-close:hover{color:#f3f4f6}
+        .hub-tabs{display:flex;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.08)}.hub-tab{padding:11px 10px;border:0;border-bottom:2px solid transparent;background:transparent;color:#9ca3af;font-size:12px;font-weight:600;cursor:pointer}.hub-tab.active{color:#d99332;border-bottom-color:#d99332}
+        .hub-content{padding:18px 20px;overflow:auto}.hub-form-title{font-size:15px;font-weight:700;margin-bottom:5px}.hub-note{font-size:11px;color:#9ca3af;margin-bottom:18px}.hub-form label{display:flex;flex-direction:column;gap:6px;color:#9ca3af;font-size:11px;margin-bottom:12px}.hub-form input{height:38px;border:1px solid rgba(255,255,255,.12);border-radius:6px;background:#151a22;color:#f3f4f6;padding:0 10px;font:inherit;font-size:13px;outline:none}.hub-form input:focus{border-color:#d99332}.hub-primary{width:100%;height:38px;border:0;border-radius:6px;background:#d99332;color:#fff;font-size:12px;font-weight:700;cursor:pointer}.hub-primary:disabled{opacity:.55;cursor:wait}.hub-message{margin-top:12px;padding:9px 10px;border-radius:5px;background:rgba(217,147,50,.1);color:#e6ad4c;font-size:11px}.hub-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07)}.hub-row div:last-child{text-align:right}.hub-row strong{display:block;font-size:12px;text-transform:capitalize}.hub-row span{display:block;color:#9ca3af;font-size:10px;margin-top:3px}.hub-status{color:#d99332!important}.hub-status.completed{color:#2fb879!important}.hub-status.failed{color:#d95c5c!important}.hub-empty{padding:28px 0;color:#9ca3af;font-size:12px;text-align:center}.hub-chat{padding-top:40px}
       `}</style>
+
+      {showTraderHub && <div className="hub-overlay" onMouseDown={e => e.target === e.currentTarget && setShowTraderHub(false)}><TraderHub activeTab={hubTab} setActiveTab={setHubTab} onClose={() => setShowTraderHub(false)}/></div>}
+      {controlMenu}
 
       <div style={{ display:'flex', flexDirection:'column', height:'100dvh', background:'#0b0d14', color:'#f3f4f6', fontFamily:"'DM Sans',sans-serif", overflow:'hidden' }}>
 
@@ -479,7 +631,7 @@ export default function Dashboard() {
               <div style={{ fontSize:11, fontWeight:700 }}>Get the AlphaFx App</div>
               <div style={{ fontSize:10, color:'#9ca3af' }}>Get a better trading experience</div>
             </div>
-            <button style={{ padding:'4px 10px', borderRadius:6, border:'1px solid rgba(255,255,255,0.2)', background:'transparent', color:'#fff', fontSize:11, fontWeight:600, cursor:'pointer' }}>Download</button>
+            <button onClick={downloadApp} style={{ padding:'4px 10px', borderRadius:6, border:'1px solid rgba(255,255,255,0.2)', background:'transparent', color:'#fff', fontSize:11, fontWeight:600, cursor:'pointer' }}>Download</button>
             <button onClick={() => setShowBanner(false)} style={{ width:20, height:20, borderRadius:4, border:'none', background:'rgba(255,255,255,0.08)', color:'#9ca3af', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
@@ -500,7 +652,7 @@ export default function Dashboard() {
             [<svg key="hi" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,"History"],
             [<svg key="c" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>,"Chat"],
           ].map(([icon, label]) => (
-            <button key={label} className="navlink">{icon}{label}</button>
+            <button key={label} className="navlink" onClick={() => { const tab = { "Trader's Hub": 'deposit', Deposit: 'deposit', Withdraw: 'withdrawal', History: 'history', Chat: 'chat' }[label]; setHubTab(tab); setShowTraderHub(true) }}>{icon}{label}</button>
           ))}
           {/* TO trader badge */}
           <button style={{ display:'flex', alignItems:'center', gap:5, padding:'5px 10px', borderRadius:8, background:'#d99332', color:'#fff', fontSize:12, fontWeight:600, cursor:'pointer', border:'none', flexShrink:0, marginLeft:4 }}>
@@ -510,41 +662,40 @@ export default function Dashboard() {
           </button>
           <div style={{ flex:1 }}/>
           {/* Right controls */}
-          <button className="icobtn" onClick={() => setMuted(m=>!m)}><SoundIcon/></button>
-          <button className="icobtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+          <button className="icobtn" onClick={toggleMute} aria-label="Toggle sound"><SoundIcon muted={muted}/></button>
+          <button className="icobtn" onClick={() => setDarkMode(value => !value)} aria-label={darkMode ? 'Switch to light theme' : 'Switch to dark theme'}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
           {/* Balance */}
-          <div style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px', borderRadius:8, border:'1px solid rgba(255,255,255,0.08)', color:'#9ca3af', fontSize:12, margin:'0 6px', cursor:'pointer' }}>
-            <span style={{ width:17, height:17, borderRadius:4, background:'#ff4757', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, flexShrink:0 }}>R</span>
-            <span style={{ fontWeight:700, color:'#f3f4f6', fontSize:13 }}>$ {balance.toFixed(2)}</span>
+          <button onClick={() => setShowAccountMenu(value => !value)} aria-label="Switch account" style={{ display:'flex', alignItems:'center', gap:5, padding:'4px 10px', borderRadius:8, border:'1px solid rgba(255,255,255,0.08)', color:'#9ca3af', fontSize:12, margin:'0 6px', cursor:'pointer', background:'transparent' }}>
+            <span style={{ width:17, height:17, borderRadius:'50%', background:accountMode==='demo'?'#2fb879':'#d95c5c', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, flexShrink:0 }}>{accountMode==='demo'?'D':'R'}</span>
+            <span style={{ fontWeight:700, color:'#f3f4f6', fontSize:13 }}>$ {activeBalance.toFixed(2)}</span>
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <button style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', background:'#d99332', color:'#fff', fontSize:13, fontWeight:700 }}>Deposit</button>
-          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:'0 6px', position:'relative' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-            <span style={{ position:'absolute', top:-3, right:2, width:14, height:14, borderRadius:'50%', background:'#ff4757', color:'#fff', fontSize:8, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>2</span>
           </button>
-          <div style={{ width:30, height:30, borderRadius:'50%', background:'#d99332', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, cursor:'pointer', marginLeft:4 }}>
+          <button onClick={() => { setHubTab('deposit'); setShowTraderHub(true) }} style={{ padding:'6px 16px', borderRadius:8, border:'none', cursor:'pointer', background:'#d99332', color:'#fff', fontSize:13, fontWeight:700 }}>Deposit</button>
+          <button onClick={() => setShowNotifications(value => !value)} aria-label="Notifications" style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:'0 6px', position:'relative' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </button>
+          <button onClick={() => setShowUserMenu(value => !value)} aria-label="Open profile menu" style={{ width:32, height:32, borderRadius:'50%', border:'1px solid rgba(255,255,255,.15)', background:'#d99332', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:700, cursor:'pointer', marginLeft:4 }}>
             {user?.name?.[0]?.toUpperCase()||'T'}
-          </div>
+          </button>
         </div>
 
         {/* ══ MOBILE NAV ══ */}
         <div className="m-nav" style={{ alignItems:'center', gap:6, padding:'0 10px', height:44, background:'#0e1118', borderBottom:'1px solid rgba(255,255,255,0.07)', flexShrink:0 }}>
-          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:3 }}>
+          <button onClick={() => setShowUserMenu(value => !value)} aria-label="Open menu" className="icobtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <div style={{ width:27, height:27, borderRadius:'50%', background:'#d99332', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, color:'#fff', flexShrink:0 }}>
             {user?.name?.[0]?.toUpperCase()||'T'}
           </div>
-          <div style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 7px', borderRadius:7, border:'1px solid rgba(255,255,255,0.1)', background:'#151a22' }}>
-            <span style={{ width:16, height:16, borderRadius:4, background:'#ff4757', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, flexShrink:0 }}>R</span>
-            <span style={{ fontSize:12, fontWeight:700 }}>$ {balance.toFixed(2)}</span>
+          <button onClick={() => setShowAccountMenu(value => !value)} aria-label="Switch account" style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 7px', borderRadius:7, border:'1px solid rgba(255,255,255,0.1)', background:'#151a22', color:'#f3f4f6', cursor:'pointer' }}>
+            <span style={{ width:16, height:16, borderRadius:'50%', background:accountMode==='demo'?'#2fb879':'#d95c5c', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, fontWeight:700, flexShrink:0 }}>{accountMode==='demo'?'D':'R'}</span>
+            <span style={{ fontSize:12, fontWeight:700 }}>$ {activeBalance.toFixed(2)}</span>
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
+          </button>
           <div style={{ flex:1 }}/>
-          <button onClick={() => setMuted(m=>!m)} className="icobtn"><SoundIcon/></button>
-          <button style={{ padding:'5px 12px', borderRadius:7, border:'none', background:'#d99332', color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer' }}>Deposit</button>
-          <button style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:3 }}>
+          <button onClick={toggleMute} className="icobtn" aria-label="Toggle sound"><SoundIcon muted={muted}/></button>
+          <button onClick={() => { setHubTab('deposit'); setShowTraderHub(true) }} style={{ padding:'5px 12px', borderRadius:7, border:'none', background:'#d99332', color:'#fff', fontSize:12, fontWeight:700, cursor:'pointer' }}>Deposit</button>
+          <button onClick={() => setShowNotifications(value => !value)} aria-label="Notifications" style={{ background:'transparent', border:'none', cursor:'pointer', color:'#9ca3af', padding:3 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
           </button>
         </div>

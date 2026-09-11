@@ -1,0 +1,10 @@
+{
+  "name": "AlphaFx Trader",
+  "short_name": "AlphaFx",
+  "description": "Professional trading workspace for AlphaFx.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0b0d14",
+  "theme_color": "#0b0d14",
+  "icons": []
+}

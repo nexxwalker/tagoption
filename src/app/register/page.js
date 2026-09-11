@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { getSupabaseClient } from '@/lib/supabase'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -18,8 +19,11 @@ export default function RegisterPage() {
     if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return }
     if (!agreed) { setError('Please agree to the Terms of Service.'); return }
     setError(''); setLoading(true)
-    await new Promise(r => setTimeout(r, 900))
-    localStorage.setItem('alphafx_user', JSON.stringify({ name: form.name, email: form.email }))
+    const { data, error: authError } = await getSupabaseClient().auth.signUp({ email: form.email, password: form.password, options: { data: { name: form.name } } })
+    if (authError) { setError(authError.message.includes('already registered') ? 'An account with this email already exists.' : authError.message); setLoading(false); return }
+    if (!data.session) { setError('Check your email to confirm your account before signing in.'); setLoading(false); return }
+    localStorage.setItem('alphafx_user', JSON.stringify({ name: form.name, email: data.user.email }))
+    localStorage.setItem('alphafx_access_token', data.session.access_token)
     router.push('/dashboard')
   }
 
